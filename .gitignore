@@ -56,3 +56,4 @@ dkms.conf
 /src/lib/
 /src/stb_files/
 /build/
+/outputs/
