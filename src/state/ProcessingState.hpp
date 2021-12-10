@@ -7,6 +7,8 @@
 #include "../utils/Reader.hpp"
 #include <tuple>
 #include <omp.h>
+#include "../Exporter/exportimage.hpp"
+#include <map>
 
 #ifndef PROCESSING_STATE_HPP
 #define PROCESSING_STATE_HPP

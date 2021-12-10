@@ -3,6 +3,8 @@
 #include "state/ProcessingState.hpp"
 #include "utils/ThreadLogger.hpp"
 #include "bridge/IOBridge.hpp"
+#include <filesystem>
+#include <string>
 #include <mutex>
 
 
@@ -17,7 +19,7 @@ class Pipeline{
     protected:
         virtual bool isRunning();
         virtual void stop();
-
+	virtual int initDrive();
     private:
         bool running;
         std::mutex * pipelineMutex;

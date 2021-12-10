@@ -19,7 +19,7 @@ public:
     bool isMounted();
     int isAvailable();
     void removeLoaded();
-    std::tuple<unsigned char*, int, int, int> read();
+    std::tuple<unsigned char*, int, int, int, std::string> read();
 
 
 private:

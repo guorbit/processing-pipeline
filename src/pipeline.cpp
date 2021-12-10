@@ -6,7 +6,7 @@ Pipeline::Pipeline(){
     this->logger = new ThreadLogger();
     logger->log("Starting system pipeline...");
     this->stateManager = new StateManager(logger);
-    this->stateManager->transitionTo(new ProcessingState());
+    this->stateManager->transitionTo(new IdlingState());
     this->ioBridge = new IOBridge(logger, stateManager);
     stateManager -> pushShutdown([this](){this -> stop();});
 }
@@ -29,7 +29,24 @@ void Pipeline::stop(){
     this->running = false;
 }
 
+int Pipeline::initDrive(){
+    std::string mountPoint = "/media/usbdrive";
+    // Unmount the USB drive
+    std::string unmountCmd = "sudo umount " +  mountPoint;
+    int unmountResult = system(unmountCmd.c_str());
+
+    if (unmountResult == 0) {
+        Pipeline::logger->log("USB drive unmounted successfully from %s",  mountPoint.c_str());
+    } else {
+        Pipeline::logger->log("Failed to unmount USB drive.");
+    }
+
+    return unmountResult;
+}
+
+
 void Pipeline::run(){
+    initDrive();
     while (this->isRunning()) {
         this->stateManager -> runStateProcess();
         IState * reqState = this->stateManager -> getRequestedState();

@@ -10,7 +10,9 @@ class StopState : public IState {
         std::string getName(){return "StopState";};
         int getStateCode(){return 's';};
         int runStateProcess(){return 0;};
-        void setLogger(ThreadLogger * logger){};
+        void setLogger(ThreadLogger * logger){
+            logger->log("stop set");
+        };
 
 };
 

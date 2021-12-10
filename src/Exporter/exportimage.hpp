@@ -3,29 +3,27 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
-#include "stb_image/stb_image.h"
-#include "stb_image/stb_image_write.h" 
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
+#include <filesystem>
+#include "../stb_files/stb_image_write.h"
+#include "../utils/ThreadLogger.hpp"
 
 #ifndef EXPORTIMAGE_HPP
 #define EXPORTIMAGE_HPP
 
-
-
-
-class ExportImage {
+class ExportImage
+{
 private:
-    unsigned char* image;
+    unsigned char *image;
     int width;
     int height;
     int channels;
     std::string filepath;
+    ThreadLogger * logger;
+
 public:
-    ExportImage(unsigned char* img,int w,int h,int chan, std::string path);
+    ExportImage(unsigned char *img, int w, int h, int chan, std::string path,ThreadLogger * log);
     ~ExportImage();
-    void SaveImage();
+    void SaveImage(std::string fileName);
 };
 
 #endif // EXPORTIMAGE_HPP

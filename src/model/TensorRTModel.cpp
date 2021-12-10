@@ -93,6 +93,12 @@ void TensorRTModel::loadModel(const char *modelPath)
 
 int *TensorRTModel::predict(unsigned char *image, int height, int width, int channels)
 {
+    float *float_image = new float[height * width * channels];
+    for (int i = 0; i < height * width * channels; ++i) {
+        float_image[i] = static_cast<float>(image[i]);
+    }
+
+
     if (engine == nullptr)
     {
         this->logger->log("Engine not initialized\n");
@@ -104,6 +110,8 @@ int *TensorRTModel::predict(unsigned char *image, int height, int width, int cha
     float *gpu_output;
     cudaMalloc((void **)&gpu_input, sizeof(float) * height * width * channels);
     cudaMalloc((void **)&gpu_output, sizeof(float) * height * width * 7);
+    // Assuming your image data is in an array called 'image' and its size is 'image_size'
+    cudaMemcpy(gpu_input, float_image, sizeof(float) * height * width * channels, cudaMemcpyHostToDevice);
 
     // Create an execution context
     nvinfer1::IExecutionContext *context = engine->createExecutionContext();
@@ -113,11 +121,19 @@ int *TensorRTModel::predict(unsigned char *image, int height, int width, int cha
 
     // Perform inference
     context->execute(1, buffers);
+    cudaError_t err;
+
+// After each CUDA API call
+    err = cudaGetLastError();
+    if (err != cudaSuccess) {
+        this->logger->log("CUDA error: %s\n", cudaGetErrorString(err));
+    }
 
     // Copy the output data to the CPU memory
     float *cpu_output = new float[height * width * 7];
     cudaMemcpy(cpu_output, gpu_output, sizeof(float) * height * width * 7, cudaMemcpyDeviceToHost);
-
+    
+    delete[] float_image;
     cudaFree(gpu_input);
     cudaFree(gpu_output);
 
@@ -139,9 +155,13 @@ int *TensorRTModel::predict(unsigned char *image, int height, int width, int cha
             }
         }
         max_indices[i] = max_index;
+        // this -> logger -> log("Max index: %s" ,std::to_string(max_index).c_str() );
     }
     // Clean up
     //! TODO: This is possibly the image output from the model so it has to be returned
+        // After cudaMemcpy to get output back to CPU
+
+    delete[] cpu_output;
 
    
     this->logger->log("TensorRT inference done!\n");
