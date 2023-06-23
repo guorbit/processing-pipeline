@@ -1,8 +1,9 @@
 #include "segfilter.hpp"
 #include <stdio.h>
-
+#include "../model/model.hpp"
 
 void SegFilter::doProcessing() {
+    Model model;
     printf("SegFilter::doProcessing()\n");
 }
 

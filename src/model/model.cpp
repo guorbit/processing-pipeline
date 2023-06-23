@@ -3,7 +3,7 @@
 #include "model.hpp"
 
 
-void model::loadModel(const char* modelPath){
+void Model::loadModel(const char* modelPath){
     printf("Loading model from %s\n", modelPath);
     TF_Graph* graph = TF_NewGraph();
     TF_Status* status = TF_NewStatus();
@@ -27,14 +27,14 @@ void model::loadModel(const char* modelPath){
     }else{
         printf("Model loaded successfully\n");
     }
-    model::graph = graph;
-    model::status = status;
-    model::sess_opts = session_options;
-    model::session = session;
-    model::run_opts = run_options;
+    Model::graph = graph;
+    Model::status = status;
+    Model::sess_opts = session_options;
+    Model::session = session;
+    Model::run_opts = run_options;
 }
 
-void model::predict(){
+void Model::predict(){
     // Set input tensor
     TF_Tensor* input_tensor = nullptr;
     TF_Output input_op = {TF_GraphOperationByName(graph, "input_tensor_name"), 0};
@@ -47,15 +47,16 @@ void model::predict(){
     TF_SessionRun(session, run_opts, &input_op, &input_tensor, 1, &output_op, &output_tensor, 1, nullptr, 0, nullptr, status);
 }
 
-model::model(/* args */)
+Model::Model(/* args */)
 {
+    printf("Model initialized!\n");
 }
 
-model::~model()
+Model::~Model()
 {
-    TF_DeleteGraph(graph);
-    TF_DeleteStatus(status);
-    TF_DeleteSessionOptions(sess_opts);
-    TF_DeleteSession(session, status);
-    TF_DeleteBuffer(run_opts);
+    // TF_DeleteGraph(graph);
+    // TF_DeleteStatus(status);
+    // TF_DeleteSessionOptions(sess_opts);
+    // TF_DeleteSession(session, status);
+    // TF_DeleteBuffer(run_opts);
 }
