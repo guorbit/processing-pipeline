@@ -1,7 +1,7 @@
 #ifndef SEG_FILTER_H
 #define SEG_FILTER_H
 
-#include "IFilter.h"
+#include "IFilter.hpp"
 
 class SegFilter: public IFilter{
 public:
