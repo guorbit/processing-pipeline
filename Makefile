@@ -1,2 +1,2 @@
-pipeline: main.c
-	gcc -Wall -Werror -Wpedantic -o pipeline.o main.c
+pipeline: main.cpp
+	gcc -Wall -Werror -Wpedantic -o pipeline.o main.cpp -lstdc++
