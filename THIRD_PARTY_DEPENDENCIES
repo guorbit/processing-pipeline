@@ -1,0 +1,4 @@
+tf_lite == 2.11
+stb_image == 2.28
+stb_image_write == 1.16
+stb_image_resize == 0.97
