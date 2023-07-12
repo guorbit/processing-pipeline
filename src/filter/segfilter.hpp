@@ -1,14 +1,19 @@
 #ifndef SEG_FILTER_H
 #define SEG_FILTER_H
 
-#include "IFilter.h"
+#include "IFilter.hpp"
+#include "../model/model.hpp"
 
 class SegFilter: public IFilter{
+private:
+    /* data */
+    Model * model;
 public:
-    SegFilter(/* args */);
+    SegFilter(const char *modelPath);
     ~SegFilter();
     virtual void doProcessing();
     virtual void doDecision();
+    
 };
 
 #endif // SEG_FILTER_H

@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include <tensorflow/c/c_api.h>
-#include "segfilter.h"
+#include "src/filter/segfilter.hpp"
 
 
 int main() {
@@ -9,7 +9,7 @@ int main() {
     // IO reading
 
     // data processing
-    SegFilter segfilter;
+    SegFilter segfilter("model.tflite");
     segfilter.doProcessing();
     segfilter.doDecision();
     // image compression
