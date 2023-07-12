@@ -21,3 +21,4 @@ IFilter.o: ./src/filter/IFilter.cpp ./src/filter/IFilter.hpp
 # Clean rule
 clean:
 	rm -f $(OBJECTS) pipeline
+

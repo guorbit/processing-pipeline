@@ -35,16 +35,21 @@ void Model::loadModel(const char* modelPath){
 }
 
 void Model::predict(){
+    printf("Predicting...\n");
     // Set input tensor
     TF_Tensor* input_tensor = nullptr;
-    TF_Output input_op = {TF_GraphOperationByName(graph, "input_tensor_name"), 0};
+    TF_Output input_op = {TF_GraphOperationByName(Model::graph, "input_layer"), 0};
 
     // Set output tensor
     TF_Tensor* output_tensor = nullptr;
-    TF_Output output_op = {TF_GraphOperationByName(graph, "output_tensor_name"), 0};
-
+    TF_Output output_op = {TF_GraphOperationByName(Model::graph, "output_layer"), 0};
+    
     // Run the session
-    TF_SessionRun(session, run_opts, &input_op, &input_tensor, 1, &output_op, &output_tensor, 1, nullptr, 0, nullptr, status);
+    TF_SessionRun(Model::session, Model::run_opts, &input_op, &input_tensor, 1, &output_op, &output_tensor, 1, nullptr, 0, nullptr, Model::status);
+}
+
+void Model::Delete(){
+    Model::~Model();
 }
 
 Model::Model(/* args */)
@@ -54,9 +59,11 @@ Model::Model(/* args */)
 
 Model::~Model()
 {
-    // TF_DeleteGraph(graph);
-    // TF_DeleteStatus(status);
-    // TF_DeleteSessionOptions(sess_opts);
-    // TF_DeleteSession(session, status);
-    // TF_DeleteBuffer(run_opts);
+    
+    // TF_DeleteGraph(Model::graph);
+    // TF_DeleteStatus(Model::status);
+    // TF_DeleteSessionOptions(Model::sess_opts);
+    // TF_DeleteSession(Model::session, Model::status);
+    // TF_DeleteBuffer(Model::run_opts);
+    printf("Model destroyed!\n");
 }

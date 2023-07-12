@@ -17,6 +17,7 @@ public:
     ~Model();
     virtual void loadModel(const char *modelPath);
     virtual void predict();
+    virtual void Delete();
 };
 
 #endif // MODEL_HPP

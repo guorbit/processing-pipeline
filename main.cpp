@@ -9,7 +9,7 @@ int main() {
     // IO reading
 
     // data processing
-    SegFilter segfilter;
+    SegFilter segfilter("model.tflite");
     segfilter.doProcessing();
     segfilter.doDecision();
     // image compression
