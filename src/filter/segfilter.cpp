@@ -2,10 +2,8 @@
 #include <stdio.h>
 #include "../model/model.hpp"
 
-void SegFilter::doProcessing() {
-    // SegFilter::model -> predict();
-    printf("SegFilter::doProcessing()\n");
-    
+void SegFilter::doProcessing(unsigned char* image, int width, int height, int channels) {
+    SegFilter::model -> predict(image, width, height, channels);   
 }
 
 void SegFilter::doDecision() {

@@ -11,7 +11,7 @@ private:
 public:
     SegFilter(const char *modelPath);
     ~SegFilter();
-    virtual void doProcessing();
+    virtual void doProcessing(unsigned char* image, int width, int height, int channels);
     virtual void doDecision();
     
 };
