@@ -1,6 +1,6 @@
 #include "TensorRTModel.hpp"
 
-TensorRTModel::TensorRTModel(const char *modelPath)
+TensorRTModel::TensorRTModel()
 {
     printf("TensorRTModel initialized!\n");
 }
