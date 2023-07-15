@@ -52,7 +52,7 @@ Mkfile.old
 dkms.conf
 
 # Tensorflow files
-/include/
-/lib/
-/stb_files/
+/src/include/
+/src/lib/
+/src/stb_files/
 /build/

@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "c_api.h": "c"
+        "c_api.h": "c",
+        "compare": "cpp",
+        "limits": "cpp",
+        "type_traits": "cpp"
     }
 }

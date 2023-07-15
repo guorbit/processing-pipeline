@@ -2,7 +2,7 @@
 CC := g++
 
 # Define the source and build directories
-SRC_DIR := ./
+SRC_DIR := ./src
 BUILD_DIR := build
 
 # Objects and executable
@@ -12,22 +12,22 @@ TARGET := $(BUILD_DIR)/pipeline
 # Compiler flags
 CFLAGS := -Wall -Werror -Wpedantic
 
-#  Executable
+# Executable
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -ltensorflow -o $(TARGET) -lstdc++
 
 # Object file rules
-$(BUILD_DIR)/main.o: main.cpp ./src/filter/IFilter.hpp ./src/filter/segfilter.hpp
+$(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(SRC_DIR)/filter/IFilter.hpp $(SRC_DIR)/filter/segfilter.hpp
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c main.cpp -o $@
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/main.cpp -o $@
 
-$(BUILD_DIR)/segfilter.o: ./src/filter/segfilter.cpp ./src/filter/segfilter.hpp $(BUILD_DIR)/TFLiteModel.o
+$(BUILD_DIR)/segfilter.o: $(SRC_DIR)/filter/segfilter.cpp $(SRC_DIR)/filter/segfilter.hpp $(BUILD_DIR)/TFLiteModel.o
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c ./src/filter/segfilter.cpp -o $@
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/filter/segfilter.cpp -o $@
 
-$(BUILD_DIR)/TFLiteModel.o: ./src/model/TFLiteModel.cpp ./src/model/TFLiteModel.hpp
+$(BUILD_DIR)/TFLiteModel.o: $(SRC_DIR)/model/TFLiteModel.cpp $(SRC_DIR)/model/TFLiteModel.hpp
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c ./src/model/TFLiteModel.cpp -o $@
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/model/TFLiteModel.cpp -o $@
 
 # Clean rule
 clean:
