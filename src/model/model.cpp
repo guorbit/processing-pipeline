@@ -83,10 +83,10 @@ void Model::deallocator(void *data, size_t length, void *arg)
     free(data);
 }
 
-void Model::Delete()
-{
-    Model::~Model();
-}
+// void Model::Delete()
+// {
+//     Model::~Model();
+// }
 
 Model::Model(/* args */)
 {

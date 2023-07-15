@@ -20,7 +20,7 @@ SegFilter::SegFilter(const char *modelPath) {
 
 SegFilter::~SegFilter() {
     
-    SegFilter::model -> Delete();
+    delete SegFilter::model;
     printf("SegFilter destroyed!\n");
 }
 
