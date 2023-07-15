@@ -2,12 +2,12 @@
 #define SEG_FILTER_H
 
 #include "IFilter.hpp"
-#include "../model/model.hpp"
+#include "../model/TFLiteModel.hpp"
 
 class SegFilter: public IFilter{
 private:
     /* data */
-    Model * model;
+    IModel * model;
 public:
     SegFilter(const char *modelPath);
     ~SegFilter();
