@@ -14,11 +14,11 @@ private:
 
 public:
     Model(/* args */);
-    ~Model();
+    virtual ~Model();
     virtual void loadModel(const char *modelPath);
     virtual void predict(unsigned char* image, int height, int width, int channels);
     static void deallocator(void* data, size_t length, void* arg);
-    virtual void Delete();
+
 };
 
 #endif // MODEL_HPP
