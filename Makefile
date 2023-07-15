@@ -22,7 +22,7 @@ ifeq ($(LIB),nvinfer)
 endif
 
 # Compiler flags
-CFLAGS := -Wall -Werror -Wpedantic
+CFLAGS := -Wall -Werror -Wpedantic -I/usr/local/cuda/include
 
 # Library to link against (default to tensorflow)
 
