@@ -16,6 +16,11 @@ ifeq ($(LIB),tensorflow)
   OBJS += $(BUILD_DIR)/TFLiteModel.o
 endif
 
+# Conditionally add TensorRTModel.o if target is nvinfer
+ifeq ($(LIB),nvinfer)
+  OBJS += $(BUILD_DIR)/TensorRTModel.o
+endif
+
 # Compiler flags
 CFLAGS := -Wall -Werror -Wpedantic
 
@@ -41,6 +46,11 @@ $(BUILD_DIR)/TFLiteModel.o: $(SRC_DIR)/model/TFLiteModel.cpp $(SRC_DIR)/model/TF
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/model/TFLiteModel.cpp -o $@
 endif
 
+ifeq ($(LIB),nvinfer)
+$(BUILD_DIR)TensorRTModel.o: $(SRC_DIR)/model/TensorRTModel.cpp $(SRC_DIR)/model/TensorRTModel.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/model/TensorRTModel.cpp -o $@
+endif
 # Clean rule
 clean:
 	rm -rf $(BUILD_DIR)
