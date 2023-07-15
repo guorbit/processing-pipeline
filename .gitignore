@@ -55,3 +55,4 @@ dkms.conf
 /include/
 /lib/
 /stb_files/
+/build/

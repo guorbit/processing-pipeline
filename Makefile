@@ -1,23 +1,34 @@
-# Object files
+# Define the compiler
+CC := g++
 
+# Define the source and build directories
+SRC_DIR := ./
+BUILD_DIR := build
 
-OBJECTS = main.o segfilter.o TFLiteModel.o
+# Objects and executable
+OBJS := $(addprefix $(BUILD_DIR)/, main.o segfilter.o TFLiteModel.o)
+TARGET := $(BUILD_DIR)/pipeline
 
-# Executable
-pipeline: $(OBJECTS)
-	g++ -Wall -Werror -Wpedantic $(OBJECTS) -ltensorflow -o pipeline -lstdc++
+# Compiler flags
+CFLAGS := -Wall -Werror -Wpedantic
+
+#  Executable
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -ltensorflow -o $(TARGET) -lstdc++
 
 # Object file rules
-main.o: main.cpp ./src/filter/IFilter.hpp ./src/filter/segfilter.hpp
-	g++ -Wall -Werror -Wpedantic -c main.cpp -o main.o
+$(BUILD_DIR)/main.o: main.cpp ./src/filter/IFilter.hpp ./src/filter/segfilter.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c main.cpp -o $@
 
-segfilter.o: ./src/filter/segfilter.cpp ./src/filter/segfilter.hpp IFilter.o TFLiteModel.o
-	g++ -Wall -Werror -Wpedantic -c ./src/filter/segfilter.cpp -o segfilter.o
+$(BUILD_DIR)/segfilter.o: ./src/filter/segfilter.cpp ./src/filter/segfilter.hpp $(BUILD_DIR)/TFLiteModel.o
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c ./src/filter/segfilter.cpp -o $@
 
-TFLiteModel.o: ./src/model/TFLiteModel.cpp ./src/model/TFLiteModel.hpp
-	g++ -Wall -Werror -Wpedantic -c ./src/model/TFLiteModel.cpp -o TFLiteModel.o
+$(BUILD_DIR)/TFLiteModel.o: ./src/model/TFLiteModel.cpp ./src/model/TFLiteModel.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c ./src/model/TFLiteModel.cpp -o $@
 
 # Clean rule
 clean:
-	rm -f $(OBJECTS) pipeline
-
+	rm -rf $(BUILD_DIR)
