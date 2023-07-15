@@ -1,8 +1,8 @@
 #include <fstream>
 #include <iostream>
-#include "model.hpp"
+#include "TFLiteModel.hpp"
 
-void Model::loadModel(const char *modelPath)
+void TFLiteModel::loadModel(const char *modelPath)
 {
     printf("Loading model from %s\n", modelPath);
     TF_Graph *graph = TF_NewGraph();
@@ -34,14 +34,14 @@ void Model::loadModel(const char *modelPath)
     {
         printf("Model loaded successfully\n");
     }
-    Model::graph = graph;
-    Model::status = status;
-    Model::sess_opts = session_options;
-    Model::session = session;
-    Model::run_opts = run_options;
+    TFLiteModel::graph = graph;
+    TFLiteModel::status = status;
+    TFLiteModel::sess_opts = session_options;
+    TFLiteModel::session = session;
+    TFLiteModel::run_opts = run_options;
 }
 
-void Model::predict(unsigned char *image, int height, int width, int channels)
+void TFLiteModel::predict(unsigned char *image, int height, int width, int channels)
 {
 
     printf("Predicting on graph...\n");
@@ -55,7 +55,7 @@ void Model::predict(unsigned char *image, int height, int width, int channels)
     int64_t dims[] = {1, height, width, channels};
     size_t ndims = 4;
 
-    TF_Tensor *input_tensor = TF_NewTensor(dtype, dims, ndims, image, height * width * channels * sizeof(unsigned char), &Model::deallocator, 0);
+    TF_Tensor *input_tensor = TF_NewTensor(dtype, dims, ndims, image, height * width * channels * sizeof(unsigned char), &TFLiteModel::deallocator, 0);
     TF_Output input_op = {TF_GraphOperationByName(graph, "x"), 0};
 
     // Set output tensor
@@ -78,7 +78,7 @@ void Model::predict(unsigned char *image, int height, int width, int channels)
     // Run the session
     TF_SessionRun(session, run_opts, &input_op, &input_tensor, 1, &output_op, &output_tensor, 1, nullptr, 0, nullptr, status);
 }
-void Model::deallocator(void *data, size_t length, void *arg)
+void TFLiteModel::deallocator(void *data, size_t length, void *arg)
 {
     free(data);
 }
@@ -88,12 +88,12 @@ void Model::deallocator(void *data, size_t length, void *arg)
 //     Model::~Model();
 // }
 
-Model::Model(/* args */)
+TFLiteModel::TFLiteModel(/* args */)
 {
     printf("Model initialized!\n");
 }
 
-Model::~Model()
+TFLiteModel::~TFLiteModel()
 {
 
     if (graph)

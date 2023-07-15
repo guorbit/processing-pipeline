@@ -1,6 +1,7 @@
 #include "segfilter.hpp"
 #include <stdio.h>
-#include "../model/model.hpp"
+
+
 
 void SegFilter::doProcessing(unsigned char* image, int width, int height, int channels) {
     SegFilter::model -> predict(image, width, height, channels);   
@@ -12,7 +13,7 @@ void SegFilter::doDecision() {
 
 SegFilter::SegFilter(const char *modelPath) {
     
-    Model * model = new Model();
+    IModel * model = new TFLiteModel();
     model -> loadModel(modelPath);
     SegFilter::model = model;
     printf("SegFilter initialized!\n");
