@@ -1,4 +1,3 @@
-
 #include "TensorRTModel.hpp"
 
 TensorRTModel::TensorRTModel(const char *modelPath)

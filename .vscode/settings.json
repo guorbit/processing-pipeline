@@ -3,6 +3,8 @@
         "c_api.h": "c",
         "compare": "cpp",
         "limits": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "iosfwd": "cpp",
+        "fstream": "cpp"
     }
 }

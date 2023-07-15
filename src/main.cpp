@@ -1,8 +1,7 @@
 
 #include <stdio.h>
-#include <tensorflow/c/c_api.h>
-#include "filter/segfilter.hpp"
 #include <iostream>
+#include "filter/segfilter.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_files/stb_image.h"
@@ -11,7 +10,6 @@
 using namespace std;
 
 int main() {
-    printf("Hello from TensorFlow C library version %s\n", TF_Version());
     // IO reading
     int width, height, channels;
     unsigned char* image = stbi_load("1499_sat.jpg", &width, &height, &channels, 0);
