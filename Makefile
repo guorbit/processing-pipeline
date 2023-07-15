@@ -12,9 +12,12 @@ TARGET := $(BUILD_DIR)/pipeline
 # Compiler flags
 CFLAGS := -Wall -Werror -Wpedantic
 
+# Library to link against (default to tensorflow)
+LIB := tensorflow
+
 # Executable
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -ltensorflow -o $(TARGET) -lstdc++
+	$(CC) $(CFLAGS) $(OBJS) -l$(LIB) -o $(TARGET) -lstdc++
 
 # Object file rules
 $(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(SRC_DIR)/filter/IFilter.hpp $(SRC_DIR)/filter/segfilter.hpp
