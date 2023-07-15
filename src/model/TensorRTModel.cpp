@@ -2,7 +2,7 @@
 
 TensorRTModel::TensorRTModel(const char *modelPath)
 {
-    TensorRTModel::loadModel(modelPath);
+    printf("TensorRTModel initialized!\n");
 }
 
 TensorRTModel::~TensorRTModel()

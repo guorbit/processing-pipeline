@@ -12,7 +12,7 @@
 
 class TensorRTModel : public IModel{
 public:
-    TensorRTModel(const char *modelPath);
+    TensorRTModel();
     virtual ~TensorRTModel();
     virtual void loadModel(const char *modelPath);
     virtual void predict(unsigned char* image, int height, int width, int channels);
