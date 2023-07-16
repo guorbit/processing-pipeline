@@ -3,6 +3,7 @@
 
 #include "IFilter.hpp"
 #include "../model/TFLiteModel.hpp"
+#include <stdio.h>
 
 class SegFilter: public IFilter{
 private:

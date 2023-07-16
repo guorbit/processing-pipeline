@@ -1,7 +1,6 @@
 //
 // IFilter.h
 //
-
 class IFilter
 {
 public:

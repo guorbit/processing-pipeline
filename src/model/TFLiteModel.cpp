@@ -1,5 +1,3 @@
-#include <fstream>
-#include <iostream>
 #include "TFLiteModel.hpp"
 
 void TFLiteModel::loadModel(const char *modelPath)
