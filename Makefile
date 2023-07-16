@@ -47,7 +47,7 @@ $(BUILD_DIR)/TFLiteModel.o: $(SRC_DIR)/model/TFLiteModel.cpp $(SRC_DIR)/model/TF
 endif
 
 ifeq ($(LIB),nvinfer)
-$(BUILD_DIR)TensorRTModel.o: $(SRC_DIR)/model/TensorRTModel.cpp $(SRC_DIR)/model/TensorRTModel.hpp
+$(BUILD_DIR)/TensorRTModel.o: $(SRC_DIR)/model/TensorRTModel.cpp $(SRC_DIR)/model/TensorRTModel.hpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/model/TensorRTModel.cpp -o $@
 endif

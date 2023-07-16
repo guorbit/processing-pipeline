@@ -1,5 +1,5 @@
-#ifndef MODEL_HPP
-#define MODEL_HPP
+#ifndef TENSORRTMODEL_HPP
+#define TENSORRTMODEL_HPP
 
 #include "IModel.hpp"
 #include <NvInfer.h>
@@ -8,9 +8,12 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-
+#include <vector>
 
 class TensorRTModel : public IModel{
+private:
+    nvinfer1::ICudaEngine* engine;
+    nvinfer1::IRuntime* runtime;
 public:
     TensorRTModel();
     virtual ~TensorRTModel();
@@ -18,4 +21,4 @@ public:
     virtual void predict(unsigned char* image, int height, int width, int channels);
 };
 
-#endif // MODEL_HPP
+#endif // TENSORRTMODEL_HPP
