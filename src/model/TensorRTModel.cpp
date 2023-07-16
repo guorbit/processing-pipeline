@@ -11,20 +11,27 @@ TensorRTModel::~TensorRTModel()
 
 void TensorRTModel::loadModel(const char *modelPath)
 {
-    std::ifstream engineFile(modelPath, std::ios::binary);
-    std::stringstream engineBuffer;
-    engineBuffer << engineFile.rdbuf();
-
-    //initialize cuda runtime
+    // Create a TensorRT engine
     nvinfer1::IRuntime* runtime = nvinfer1::createInferRuntime(gLogger);
-
-    //deserialize the engine
-    std::string engineStr = loadEngine("path_to_your_engine.plan");
-    nvinfer1::ICudaEngine* engine = runtime->deserializeCudaEngine(engineStr.data(), engineStr.size());
-
-    //create execution context
+    
+    // Load the engine file
+    std::ifstream engineFile("your_model.engine", std::ios::binary);
+    std::string engineStr((std::istreambuf_iterator<char>(engineFile)), std::istreambuf_iterator<char>());
+    
+    // Deserialize the engine
+    nvinfer1::ICudaEngine* engine = runtime->deserializeCudaEngine(engineStr.data(), engineStr.size(), nullptr);
+    
+    // Create an execution context
     nvinfer1::IExecutionContext* context = engine->createExecutionContext();
-
+    
+    // TODO: Allocate input and output buffers, copy input data, run inference, and retrieve the output
+    
+    // Clean up
+    context->destroy();
+    engine->destroy();
+    runtime->destroy();
+    
+    return 0;
     
 }
 
