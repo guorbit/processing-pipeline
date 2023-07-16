@@ -6,7 +6,7 @@ SRC_DIR := ./src
 BUILD_DIR := build
 
 # Objects and executable
-OBJS := $(addprefix $(BUILD_DIR)/, main.o segfilter.o)
+OBJS := $(addprefix $(BUILD_DIR)/, main.o segfilter.o StateManager.o IdlingState.o ProcessingState.o)
 TARGET := $(BUILD_DIR)/pipeline
 
 LIB := tensorflow
@@ -44,6 +44,20 @@ $(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(SRC_DIR)/filter/IFilter.hpp $(SRC_DIR
 $(BUILD_DIR)/segfilter.o: $(SRC_DIR)/filter/segfilter.cpp $(SRC_DIR)/filter/segfilter.hpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/filter/segfilter.cpp -o $@
+
+$(BUILD_DIR)/StateManager.o: $(SRC_DIR)/state/StateManager.cpp $(SRC_DIR)/state/StateManager.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/state/StateManager.cpp -o $@
+
+$(BUILD_DIR)/IdlingState.o: $(SRC_DIR)/state/IdlingState.cpp $(SRC_DIR)/state/IdlingState.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/state/IdlingState.cpp -o $@
+
+$(BUILD_DIR)/ProcessingState.o: $(SRC_DIR)/state/ProcessingState.cpp $(SRC_DIR)/state/ProcessingState.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/state/ProcessingState.cpp -o $@
+
+
 
 ifeq ($(LIB),tensorflow)
 $(BUILD_DIR)/TFLiteModel.o: $(SRC_DIR)/model/TFLiteModel.cpp $(SRC_DIR)/model/TFLiteModel.hpp
