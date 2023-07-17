@@ -13,7 +13,7 @@ void SegFilter::doDecision() {
 
 SegFilter::SegFilter(const char *modelPath) {
     
-    IModel * model = new TFLiteModel();
+    IModel * model = new TensorRTModel();
     model -> loadModel(modelPath);
     SegFilter::model = model;
     printf("SegFilter initialized!\n");

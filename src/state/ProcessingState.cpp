@@ -28,7 +28,7 @@ int ProcessingState::runStateProcess(){
 
 
     // data processing
-    SegFilter segfilter("model.pb");
+    SegFilter segfilter("model.engine");
     segfilter.doProcessing(image, width, height, channels);
     segfilter.doDecision();
     printf("processing done!\n");

@@ -37,10 +37,15 @@ std::vector<char> readEngine(const std::string& enginePath)
 
 void TensorRTModel::loadModel(const char *modelPath)
 {
+    std::cout << "TensorRT version: "
+          << NV_TENSORRT_MAJOR << "." 
+          << NV_TENSORRT_MINOR << "." 
+          << NV_TENSORRT_PATCH << "." 
+          << NV_TENSORRT_BUILD << std::endl;
         // Create a TensorRT runtime
     runtime = nvinfer1::createInferRuntime(gLogger);
 
-    std::vector<char> engineData = readEngine("your_model_path");
+    std::vector<char> engineData = readEngine(modelPath);
 
     engine = runtime->deserializeCudaEngine(engineData.data(), engineData.size());
 }
