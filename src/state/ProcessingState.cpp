@@ -36,7 +36,7 @@ int ProcessingState::runStateProcess(){
 
     // IO writing
     printf("freeing image\n");
- 
+    stbi_image_free(image);
     printf("image freed\n");
     return 0;
 }
