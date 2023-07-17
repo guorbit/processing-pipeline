@@ -11,6 +11,8 @@ TARGET := $(BUILD_DIR)/pipeline
 
 LIB := tensorflow
 
+LEAK := FALSE
+
 # Conditionally add TFLiteModel.o if target is tensorflow
 ifeq ($(LIB),tensorflow)
   OBJS += $(BUILD_DIR)/TFLiteModel.o
@@ -22,11 +24,21 @@ ifeq ($(LIB),nvinfer)
 endif
 
 # Compiler flags
-CFLAGS := -Wall -Werror -Wpedantic
+CFLAGS := -Wall -Werror -Wpedantic 
+
+LINKERFLAGS := -lstdc++ 
+
+# Conditionally add leak sanitizer
+ifeq ($(LEAK),TRUE)
+  CFLAGS += -fsanitize=leak
+endif
+
 
 # Include paths
 ifeq ($(LIB),nvinfer)
-  CFLAGS += -I/usr/local/cuda/include
+  CFLAGS += -I/usr/local/cuda/include 
+  LINKERFLAGS += -lcudart -lcuda -L/usr/local/cuda/lib64
+
 endif
 
 # Library to link against (default to tensorflow)
@@ -34,7 +46,7 @@ endif
 
 # Executable
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -l$(LIB) -o $(TARGET) -lstdc++
+	$(CC) $(CFLAGS) $(OBJS) -l$(LIB) -o $(TARGET) $(LINKERFLAGS)
 
 # Object file rules
 $(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(SRC_DIR)/filter/IFilter.hpp $(SRC_DIR)/filter/segfilter.hpp

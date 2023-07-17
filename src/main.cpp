@@ -10,4 +10,6 @@ int main() {
     stateManager -> runStateProcess();
     stateManager -> setState(new ProcessingState());
     stateManager -> runStateProcess();
+
+    delete stateManager;
 }
