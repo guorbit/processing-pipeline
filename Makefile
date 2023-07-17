@@ -11,6 +11,8 @@ TARGET := $(BUILD_DIR)/pipeline
 
 LIB := tensorflow
 
+LEAK := TRUE
+
 # Conditionally add TFLiteModel.o if target is tensorflow
 ifeq ($(LIB),tensorflow)
   OBJS += $(BUILD_DIR)/TFLiteModel.o
@@ -22,7 +24,13 @@ ifeq ($(LIB),nvinfer)
 endif
 
 # Compiler flags
-CFLAGS := -Wall -Werror -Wpedantic
+CFLAGS := -Wall -Werror -Wpedantic 
+
+# Conditionally add leak sanitizer
+ifeq ($(LEAK),TRUE)
+  CFLAGS += -fsanitize=leak
+endif
+
 
 # Include paths
 ifeq ($(LIB),nvinfer)
