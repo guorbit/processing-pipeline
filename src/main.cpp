@@ -17,7 +17,7 @@ int main() {
     IManager * stateManager = new StateManager();
     stateManager -> setLogger(logger);
     stateManager -> transitionTo(new IdlingState());
-    
+    mainLoop(stateManager);
 
     delete stateManager;
     delete logger;
