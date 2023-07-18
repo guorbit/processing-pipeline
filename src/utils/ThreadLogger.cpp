@@ -51,6 +51,7 @@ void ThreadLogger::log(const char *format, ...)
     // Push the formatted string onto the log queue
     logQueue->push(newBuffer);
 
+    delete[] newBuffer;
     // Unlock the mutex after accessing the logger object
     va_end(args);
 }
@@ -63,7 +64,6 @@ void ThreadLogger::logMessage()
         {
             std::lock_guard<std::mutex> guard(*logMutex);
             std::cout << ThreadLogger::logQueue->front() << std::endl;
-            delete[] &(ThreadLogger::logQueue)->front();
             ThreadLogger::logQueue->pop();
         }
         usleep(1000);
