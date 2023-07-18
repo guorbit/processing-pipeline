@@ -3,13 +3,16 @@
 #include <queue>
 #include <mutex>
 #include <thread>
-
+#include <sstream>
+#include <unistd.h>
+#include <cstdarg>
+#include <iomanip>
 
 // thread safe logger with implemented queue for threads to push logs to
-#ifndef LOGGER_HPP
-#define LOGGER_HPP
+#ifndef THREAD_LOGGER_HPP
+#define THREAD_LOGGER_HPP
 
-class Logger {
+class ThreadLogger {
 private:
     std::queue<std::string>* logQueue;
     std::mutex * logMutex;
@@ -18,9 +21,11 @@ private:
     bool stopLogger;
 
 public:
-    Logger();
-    ~Logger();
-    void log(std::string message);
+    ThreadLogger();
+    ~ThreadLogger();
+
+    void log(const char* format, ...);
+
 };
 
-#endif // LOGGER_HPP
+#endif // THREAD_LOGGER_HPP

@@ -1,4 +1,5 @@
 #include "ProcessingState.hpp"
+
 #define STB_IMAGE_IMPLEMENTATION
 
 #include "../stb_files/stb_image.h"
@@ -6,8 +7,7 @@
 using namespace std;
 
 
-ProcessingState::ProcessingState(){
-    printf("System processing state initialized...\n");
+ProcessingState::ProcessingState(){   
 }
 
 ProcessingState::~ProcessingState(){
@@ -19,17 +19,18 @@ std::string ProcessingState::getName(){
 }
 
 int ProcessingState::runStateProcess(){
-    printf("System entered processing state...\n");
+    this->logger->log("System entered processing state...");
     // IO reading
     int width, height, channels;
     unsigned char* image = stbi_load("1499_sat.jpg", &width, &height, &channels, 0);
     if (image == nullptr) {
         // Process the image
-        printf("Error loading image: %s\n", stbi_failure_reason());
-        printf("Skipping processing stage...\n");
+        this->logger->log("Error loading image: ", stbi_failure_reason());
+        this->logger->log("Skipping processing stage...");
         return 1;
     }
-    printf("Loaded image with a width of %dpx, a height of %dpx and %d channels\n", width, height, channels);
+    this->logger->log("Loaded image with a width of %dpx, a height of %dpx and %d channels",width,height,channels);
+    
 
 
     // data processing
@@ -44,4 +45,9 @@ int ProcessingState::runStateProcess(){
     stbi_image_free(image);
     printf("image freed\n");
     return 0;
+}
+
+void ProcessingState::setLogger(ThreadLogger * logger){
+    this->logger = logger;
+    logger->log("Processing state initialized...\n");
 }
