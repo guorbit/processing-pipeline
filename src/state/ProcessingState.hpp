@@ -14,6 +14,7 @@ class ProcessingState : public IState {
 public:
     ProcessingState();
     virtual ~ProcessingState();
+    virtual std::string getName();
     virtual int runStateProcess();
 };
 

@@ -1,5 +1,8 @@
 #include "IState.hpp"
 #include "IManager.hpp"
+#include <typeinfo> 
+#include <stdio.h>
+
 
 #ifndef STATE_MANAGER_HPP
 #define STATE_MANAGER_HPP
@@ -10,7 +13,7 @@ protected:
 public:
     StateManager();
     virtual ~StateManager();
-    virtual void setState(IState * state);
+    virtual void transitionTo(IState * state);
     virtual void runStateProcess();
 };
 

@@ -7,14 +7,19 @@ using namespace std;
 
 
 ProcessingState::ProcessingState(){
-
+    printf("System processing state initialized...\n");
 }
 
 ProcessingState::~ProcessingState(){
 
 }
 
+std::string ProcessingState::getName(){
+    return "Processing state";
+}
+
 int ProcessingState::runStateProcess(){
+    printf("System entered processing state...\n");
     // IO reading
     int width, height, channels;
     unsigned char* image = stbi_load("1499_sat.jpg", &width, &height, &channels, 0);

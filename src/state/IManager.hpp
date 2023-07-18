@@ -10,7 +10,7 @@ class IManager
 {
 public:
     virtual ~IManager() {}
-    virtual void setState(IState * state) = 0;
+    virtual void transitionTo(IState * state) = 0;
     virtual void runStateProcess() = 0;
 };
 

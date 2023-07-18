@@ -2,14 +2,19 @@
 #include "state/IdlingState.hpp"
 #include "state/ProcessingState.hpp"
 
+bool isRunning = true;
+
+void mainLoop(IManager * stateManager) {
+    while (isRunning) {
+        stateManager -> runStateProcess();
+    }
+}
+
 int main() {
     IManager * stateManager = new StateManager();
-
-    //perform state cycling
-    stateManager -> setState(new IdlingState());
-    stateManager -> runStateProcess();
-    stateManager -> setState(new ProcessingState());
-    stateManager -> runStateProcess();
+    stateManager -> transitionTo(new IdlingState());
+    mainLoop(stateManager);
 
     delete stateManager;
 }
+
