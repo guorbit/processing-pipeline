@@ -11,13 +11,21 @@ ThreadLogger::ThreadLogger()
 
 ThreadLogger::~ThreadLogger()
 {
-
     std::lock_guard<std::mutex> lock(*ThreadLogger::logMutex);
     ThreadLogger::stopLogger = true;
 
     ThreadLogger::logThread.join();
+
+    while (!ThreadLogger::logQueue->empty())
+    {
+        std::cout << ThreadLogger::logQueue->front() << std::endl;
+        ThreadLogger::logQueue->pop();
+    }
+
+
     delete ThreadLogger::logQueue;
     delete ThreadLogger::logMutex;
+    std::cout << "Logger thread terminated" << std::endl;
 }
 
 void ThreadLogger::log(const char *format, ...)
@@ -69,3 +77,4 @@ void ThreadLogger::logMessage()
         usleep(1000);
     }
 }
+
