@@ -16,7 +16,7 @@ int main() {
     logger -> log("Starting system...");
     IManager * stateManager = new StateManager(logger);
 
-    stateManager -> transitionTo(new ProcessingState());
+    stateManager -> transitionTo(new IdlingState());
     mainLoop(stateManager);
 
     delete stateManager;
