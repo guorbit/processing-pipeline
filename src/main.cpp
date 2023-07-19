@@ -1,15 +1,25 @@
 #include "state/StateManager.hpp"
 #include "state/IdlingState.hpp"
 #include "state/ProcessingState.hpp"
+#include "utils/ThreadLogger.hpp"
+
+bool isRunning = true;
+
+void mainLoop(IManager * stateManager) {
+    while (isRunning) {
+        stateManager -> runStateProcess();
+    }
+}
 
 int main() {
-    IManager * stateManager = new StateManager();
+    ThreadLogger * logger = new ThreadLogger();
+    logger -> log("Starting system...");
+    IManager * stateManager = new StateManager(logger);
 
-    //perform state cycling
-    stateManager -> setState(new IdlingState());
-    stateManager -> runStateProcess();
-    stateManager -> setState(new ProcessingState());
-    stateManager -> runStateProcess();
+    stateManager -> transitionTo(new IdlingState());
+    mainLoop(stateManager);
 
     delete stateManager;
+    delete logger;
 }
+

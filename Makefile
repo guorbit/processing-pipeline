@@ -6,7 +6,7 @@ SRC_DIR := ./src
 BUILD_DIR := build
 
 # Objects and executable
-OBJS := $(addprefix $(BUILD_DIR)/, main.o segfilter.o StateManager.o IdlingState.o ProcessingState.o)
+OBJS := $(addprefix $(BUILD_DIR)/, main.o segfilter.o StateManager.o IdlingState.o ProcessingState.o ThreadLogger.o)
 TARGET := $(BUILD_DIR)/pipeline
 
 LIB := tensorflow
@@ -26,7 +26,7 @@ endif
 # Compiler flags
 CFLAGS := -Wall -Werror -Wpedantic 
 
-LINKERFLAGS := -lstdc++ 
+LINKERFLAGS := -lstdc++ -lpthread
 
 # Conditionally add leak sanitizer
 ifeq ($(LEAK),TRUE)
@@ -46,7 +46,7 @@ endif
 
 # Executable
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -l$(LIB) -o $(TARGET) $(LINKERFLAGS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) -l$(LIB) $(LINKERFLAGS)
 
 # Object file rules
 $(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(SRC_DIR)/filter/IFilter.hpp $(SRC_DIR)/filter/segfilter.hpp
@@ -68,6 +68,10 @@ $(BUILD_DIR)/IdlingState.o: $(SRC_DIR)/state/IdlingState.cpp $(SRC_DIR)/state/Id
 $(BUILD_DIR)/ProcessingState.o: $(SRC_DIR)/state/ProcessingState.cpp $(SRC_DIR)/state/ProcessingState.hpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/state/ProcessingState.cpp -o $@
+
+$(BUILD_DIR)/ThreadLogger.o: $(SRC_DIR)/utils/ThreadLogger.cpp $(SRC_DIR)/utils/ThreadLogger.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/utils/ThreadLogger.cpp -o $@
 
 
 
