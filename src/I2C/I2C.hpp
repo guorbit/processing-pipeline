@@ -10,10 +10,13 @@
 
 class I2CBUS{
 private:
-	int image_file; //Variable for data 
-    char *jetson_bus; 
-    unsigned char address;
+    char *jetson_bus; //Bus number dependent on pin
+    unsigned char address; //Slave address 8 bit length
+    int image_file; //Variable for data 
 public:
+    I2C(); //Constructor
+    ~I2C(); //Destructor
+    Check_Image(); //Ensure Image is accessible 
 
 };
 
