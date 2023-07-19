@@ -27,9 +27,9 @@ void I2CBUS::check_image() //Check that the image file has been opened
     }
 }
 
-void I2CBUS::set_slave()  //
+void I2CBUS::set_slave()  //Set slave device to be read or written from 
 {
-    if (ioctl(image_file, I2C_SLAVE, address)) {
+    if (ioctl(image_file, I2C_SLAVE, address)) { //Check if able to receive data from slave 
         printf("Failed to access slave. \n");
     }
 }
