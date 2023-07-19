@@ -18,5 +18,3 @@ public:
 };
 
 #endif
-  git config --global user.email "2470451a@student.gla.ac.uk"
-  git config --global user.name "Sean Andrew"
