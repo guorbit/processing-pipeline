@@ -11,7 +11,7 @@ protected:
     IState * state;
     ThreadLogger * logger;
 public:
-    StateManager();
+    StateManager(ThreadLogger * logger);
     virtual ~StateManager();
     virtual void transitionTo(IState * state);
     virtual void runStateProcess();
