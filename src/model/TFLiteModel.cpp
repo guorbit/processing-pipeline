@@ -2,7 +2,7 @@
 
 void TFLiteModel::loadModel(const char *modelPath)
 {
-    printf("Loading model from %s\n", modelPath);
+    TFLiteModel::logger -> log("Loading model from %s", modelPath);
     TF_Graph *graph = TF_NewGraph();
     TF_Status *status = TF_NewStatus();
     TF_SessionOptions *session_options = TF_NewSessionOptions();
@@ -12,7 +12,8 @@ void TFLiteModel::loadModel(const char *modelPath)
     std::ifstream model_file(modelPath, std::ios::binary);
     if (!model_file.is_open())
     {
-        fprintf(stderr, "ERROR: Unable to open model file %s\n", modelPath);
+        LoggingLevelWrapper level(LoggingLevel::ERROR);
+        TFLiteModel::logger -> log(level,"Unable to open model file %s", modelPath);
         return;
     }
     std::string model_data((std::istreambuf_iterator<char>(model_file)), std::istreambuf_iterator<char>());
@@ -25,27 +26,31 @@ void TFLiteModel::loadModel(const char *modelPath)
     TF_Session *session = TF_NewSession(graph, session_options, status);
     if (TF_GetCode(status) != TF_OK)
     {
-        fprintf(stderr, "ERROR: Unable to import graph %s", TF_Message(status));
+        LoggingLevelWrapper level(LoggingLevel::ERROR);
+        TFLiteModel::logger -> log(level,"Unable to import graph %s", TF_Message(status));
         return;
     }
     else
     {
-        printf("Model loaded successfully\n");
+        TFLiteModel::logger -> log("Graph loaded succesfully");
     }
     TFLiteModel::graph = graph;
     TFLiteModel::status = status;
     TFLiteModel::sess_opts = session_options;
     TFLiteModel::session = session;
     TFLiteModel::run_opts = run_options;
+    TF_DeleteImportGraphDefOptions(graph_opts);
+    TF_DeleteBuffer(model_buffer);
 }
 
 void TFLiteModel::predict(unsigned char *image, int height, int width, int channels)
 {
 
-    printf("Predicting on graph...\n");
+    TFLiteModel::logger -> log("Performing inference");
     if (graph == nullptr)
     {
-        printf("ERROR: Graph not initialized\n");
+        LoggingLevelWrapper level(LoggingLevel::ERROR);
+        TFLiteModel::logger -> log(level, "Graph not initialized");
         return;
     }
     // Set input tensor
@@ -60,25 +65,27 @@ void TFLiteModel::predict(unsigned char *image, int height, int width, int chann
     TF_Tensor *output_tensor = nullptr;
     TF_Output output_op = {TF_GraphOperationByName(graph, "sequential/output_layer/Softmax"), 0};
 
-    printf("Running session...\n");
     if (session == nullptr)
     {
-        printf("ERROR: Session not initialized\n");
+        LoggingLevelWrapper level(LoggingLevel::ERROR);
+        TFLiteModel::logger -> log(level,"TF object session not initialized");
         return;
     }
     if (status == nullptr)
     {
-        printf("ERROR: Status not initialized\n");
+        LoggingLevelWrapper level(LoggingLevel::ERROR);
+        TFLiteModel::logger -> log(level,"TF object status not initialized");
         return;
     }
 
 
     // Run the session
     TF_SessionRun(session, run_opts, &input_op, &input_tensor, 1, &output_op, &output_tensor, 1, nullptr, 0, nullptr, status);
+    TF_DeleteTensor(input_tensor);
 }
 void TFLiteModel::deallocator(void *data, size_t length, void *arg)
 {
-    free(data);
+    // free(data);
 }
 
 // void Model::Delete()
@@ -86,9 +93,10 @@ void TFLiteModel::deallocator(void *data, size_t length, void *arg)
 //     Model::~Model();
 // }
 
-TFLiteModel::TFLiteModel(/* args */)
+TFLiteModel::TFLiteModel(ThreadLogger * logger)
 {
-    printf("Model initialized!\n");
+    TFLiteModel::logger = logger;
+    logger -> log("TF lite module initialized");
 }
 
 TFLiteModel::~TFLiteModel()
@@ -104,5 +112,5 @@ TFLiteModel::~TFLiteModel()
         TF_DeleteSessionOptions(sess_opts);
     if (run_opts)
         TF_DeleteBuffer(run_opts);
-    printf("Model destroyed!\n");
+    TFLiteModel::logger -> log("TF Lite module destroyed");
 }

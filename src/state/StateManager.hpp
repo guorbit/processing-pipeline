@@ -2,6 +2,7 @@
 #include "IManager.hpp"
 #include <typeinfo> 
 #include <stdio.h>
+#include "../utils/LoggingLevel.hpp"
 
 #ifndef STATE_MANAGER_HPP
 #define STATE_MANAGER_HPP

@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../filter/segfilter.hpp"
 #include "../utils/ThreadLogger.hpp"
+#include "../utils/LoggingLevel.hpp"
 
 #ifndef PROCESSING_STATE_HPP
 #define PROCESSING_STATE_HPP

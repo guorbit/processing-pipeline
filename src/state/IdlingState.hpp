@@ -2,6 +2,7 @@
 #include "../utils/ThreadLogger.hpp"
 #include <unistd.h>
 #include <stdio.h>
+#include "../utils/LoggingLevel.hpp"
 
 
 #ifndef IDLING_STATE_HPP
