@@ -14,7 +14,7 @@ void SegFilter::doDecision() {
 
 SegFilter::SegFilter(const char *modelPath,ThreadLogger * logger) {
     
-    IModel * model = new TensorRTModel();
+    IModel * model = new TFLiteModel(logger);
     model -> loadModel(modelPath);
     SegFilter::model = model;
 

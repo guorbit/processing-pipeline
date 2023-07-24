@@ -8,7 +8,7 @@ BUILD_DIR := build
 DEBUG := FALSE
 
 # Objects and executable
-OBJS := $(addprefix $(BUILD_DIR)/, main.o segfilter.o StateManager.o IdlingState.o ProcessingState.o ThreadLogger.o LoggingLevel.o)
+OBJS := $(addprefix $(BUILD_DIR)/, main.o segfilter.o StateManager.o IdlingState.o ProcessingState.o IOBridge.o ThreadLogger.o LoggingLevel.o)
 TARGET := $(BUILD_DIR)/pipeline
 
 LIB := tensorflow
@@ -74,6 +74,10 @@ $(BUILD_DIR)/IdlingState.o: $(SRC_DIR)/state/IdlingState.cpp $(SRC_DIR)/state/Id
 $(BUILD_DIR)/ProcessingState.o: $(SRC_DIR)/state/ProcessingState.cpp $(SRC_DIR)/state/ProcessingState.hpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/state/ProcessingState.cpp -o $@
+
+$(BUILD_DIR)/IOBridge.o: $(SRC_DIR)/bridge/IOBridge.cpp $(SRC_DIR)/bridge/IOBridge.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/bridge/IOBridge.cpp -o $@
 
 $(BUILD_DIR)/ThreadLogger.o: $(SRC_DIR)/utils/ThreadLogger.cpp $(SRC_DIR)/utils/ThreadLogger.hpp
 	@mkdir -p $(@D)

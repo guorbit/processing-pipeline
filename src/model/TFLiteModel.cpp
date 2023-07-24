@@ -78,10 +78,14 @@ void TFLiteModel::predict(unsigned char *image, int height, int width, int chann
         return;
     }
 
-
+    this -> logger -> log("Running session");
     // Run the session
-    TF_SessionRun(session, run_opts, &input_op, &input_tensor, 1, &output_op, &output_tensor, 1, nullptr, 0, nullptr, status);
-    TF_DeleteTensor(input_tensor);
+    if (session)
+        TF_SessionRun(session, run_opts, &input_op, &input_tensor, 1, &output_op, &output_tensor, 1, nullptr, 0, nullptr, status);
+    this -> logger -> log("Session run");
+    if (input_tensor)
+        TF_DeleteTensor(input_tensor);
+    
 }
 void TFLiteModel::deallocator(void *data, size_t length, void *arg)
 {

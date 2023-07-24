@@ -2,13 +2,34 @@
 
 StateManager::StateManager(ThreadLogger * logger) {
     StateManager::logger = logger;
-    
+    StateManager::stateMutex = new std::mutex();
     StateManager::state = nullptr;
     StateManager::logger -> log("State manager initialized...");
 }
 
 StateManager::~StateManager() {
     delete StateManager::state;
+    delete StateManager::stateMutex;
+    if (StateManager::requestedState != nullptr){
+        delete StateManager::requestedState;
+    }
+}
+
+IState * StateManager::getState() {
+    return StateManager::state;
+}
+
+IState * StateManager::getRequestedState() {
+    std::lock_guard<std::mutex> guard(*StateManager::stateMutex);
+    return StateManager::requestedState;
+}
+
+void StateManager::requestState(IState * state) {
+    // sets requested state
+
+    
+    std::lock_guard<std::mutex> guard(*StateManager::stateMutex);
+    StateManager::requestedState = state;
 }
 
 void StateManager::transitionTo(IState * state) {
@@ -31,8 +52,4 @@ void StateManager::transitionTo(IState * state) {
 void StateManager::runStateProcess() {
     // runs state process
     StateManager::state -> runStateProcess();
-}
-
-void StateManager::setLogger(ThreadLogger * logger) {
-   
 }
