@@ -4,6 +4,7 @@
 #include "../state/IManager.hpp"
 #include "../state/ProcessingState.hpp"
 #include "../state/IdlingState.hpp"
+#include "../state/StopState.hpp"
 
 #ifndef IO_BRIDGE_HPP
 #define IO_BRIDGE_HPP

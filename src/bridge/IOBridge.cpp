@@ -5,6 +5,7 @@ IOBridge::IOBridge(ThreadLogger * logger, IManager * stateManager) {
     IOBridge::running = true;
     IOBridge::logger = logger;
     IOBridge::stateManager = stateManager;
+    stateManager -> pushShutdown([this](){this -> stop();});
     IOBridge::mutex = new std::mutex();
     IOBridge::thread = new std::thread(&IOBridge::runLoop, this);
     logger -> log("IOBridge initialized...");
@@ -25,6 +26,7 @@ bool IOBridge::isRunning() {
 }
 
 void IOBridge::stop() {
+    this -> logger -> log("Stopping IOBridge...");
     std::lock_guard<std::mutex> lock(*IOBridge::mutex);
     IOBridge::running = false;
 }
@@ -33,8 +35,11 @@ void IOBridge::runLoop() {
     int i = 0;
     while (IOBridge::isRunning()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
         if (i == 10){
-            IOBridge::stop();
+            IOBridge::logger -> log("Requesting system shutdown");
+            IOBridge::stateManager -> requestState(new StopState());
+            break;
         }else if(i % 2 == 0){
             IOBridge::logger -> log("Requesting processing state");
             IOBridge::stateManager -> requestState(new ProcessingState());

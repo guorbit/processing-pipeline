@@ -1,10 +1,12 @@
 #include "StateManager.hpp"
 
+
 StateManager::StateManager(ThreadLogger * logger) {
     StateManager::logger = logger;
     StateManager::stateMutex = new std::mutex();
     StateManager::state = nullptr;
     StateManager::logger -> log("State manager initialized...");
+    StateManager::shutdownQueue = new std::queue<std::function<void()>>();
 }
 
 StateManager::~StateManager() {
@@ -13,6 +15,7 @@ StateManager::~StateManager() {
     if (StateManager::requestedState != nullptr){
         delete StateManager::requestedState;
     }
+    delete StateManager::shutdownQueue;
 }
 
 IState * StateManager::getState() {
@@ -47,9 +50,25 @@ void StateManager::transitionTo(IState * state) {
     // sets new state
     StateManager::state = state;
     StateManager::state -> setLogger(StateManager::logger);
+   if (StateManager::state -> getName() == "StopState"){
+        StateManager::shutdown();
+    }
 }
 
 void StateManager::runStateProcess() {
     // runs state process
     StateManager::state -> runStateProcess();
+}
+
+void StateManager::pushShutdown(std::function<void()> shutdownFunction){
+    std::lock_guard<std::mutex> guard(*StateManager::stateMutex);
+    StateManager::shutdownQueue -> push(shutdownFunction);
+}
+
+void StateManager::shutdown(){
+    std::lock_guard<std::mutex> guard(*StateManager::stateMutex);
+    while (!StateManager::shutdownQueue -> empty()){
+        StateManager::shutdownQueue -> front()();
+        StateManager::shutdownQueue -> pop();
+    }
 }

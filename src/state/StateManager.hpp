@@ -5,6 +5,8 @@
 #include "../utils/LoggingLevel.hpp"
 #include <thread>
 #include <mutex>   
+#include <queue>
+#include <functional>
 
 #ifndef STATE_MANAGER_HPP
 #define STATE_MANAGER_HPP
@@ -15,6 +17,8 @@ protected:
     IState * requestedState = nullptr;
     std::mutex * stateMutex;
     ThreadLogger * logger;
+    std::queue<std::function<void()>> * shutdownQueue;
+
 public:
     StateManager(ThreadLogger * logger);
     virtual ~StateManager();
@@ -23,6 +27,9 @@ public:
     virtual void requestState(IState * state);
     virtual void transitionTo(IState * state);
     virtual void runStateProcess();
+    virtual void pushShutdown(std::function<void()> shutdownFunction);
+    virtual void shutdown();
+
 };
 
 #endif // SYSTEM_STATE_HPP

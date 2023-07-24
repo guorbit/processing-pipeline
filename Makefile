@@ -8,7 +8,7 @@ BUILD_DIR := build
 DEBUG := FALSE
 
 # Objects and executable
-OBJS := $(addprefix $(BUILD_DIR)/, main.o segfilter.o StateManager.o IdlingState.o ProcessingState.o IOBridge.o ThreadLogger.o LoggingLevel.o)
+OBJS := $(addprefix $(BUILD_DIR)/, main.o pipeline.o segfilter.o StateManager.o IdlingState.o ProcessingState.o IOBridge.o ThreadLogger.o LoggingLevel.o)
 TARGET := $(BUILD_DIR)/pipeline
 
 LIB := tensorflow
@@ -58,6 +58,10 @@ $(TARGET): $(OBJS)
 $(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(SRC_DIR)/filter/IFilter.hpp $(SRC_DIR)/filter/segfilter.hpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/main.cpp -o $@
+
+$(BUILD_DIR)/pipeline.o: $(SRC_DIR)/pipeline.cpp $(SRC_DIR)/pipeline.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/pipeline.cpp -o $@
 
 $(BUILD_DIR)/segfilter.o: $(SRC_DIR)/filter/segfilter.cpp $(SRC_DIR)/filter/segfilter.hpp
 	@mkdir -p $(@D)

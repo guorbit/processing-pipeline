@@ -3,6 +3,7 @@
 //
 #include "IState.hpp"
 #include "../utils/ThreadLogger.hpp"
+#include <functional>
 
 #ifndef I_MANAGER_HPP
 #define I_MANAGER_HPP
@@ -16,6 +17,8 @@ public:
     virtual void requestState(IState * state) = 0;
     virtual void transitionTo(IState * state) = 0;
     virtual void runStateProcess() = 0; 
+    virtual void pushShutdown(std::function<void()> shutdownFunction) = 0;
+    virtual void shutdown() = 0;
 };
 
 #endif // I_MANAGER_HPP
