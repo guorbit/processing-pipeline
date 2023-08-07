@@ -2,6 +2,8 @@
 #define EXP_IMAGE_H
 
 #include <stdio.h>
+#include <iostream>
+#include <string>
 #define STB_IMAGE_IMPLEMENTATION
 #include "src/stb_image/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION 
@@ -9,10 +11,11 @@
 
 class ExportImage {
 private:
-    unsigned char *image;
+    unsigned char* image;
     int width;
     int height;
     int channels;
+    std::string filepath;
 public:
     ExportImage();
     ~ExportImage();
