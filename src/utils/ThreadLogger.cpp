@@ -28,8 +28,9 @@ ThreadLogger::~ThreadLogger()
     std::cout << "Logger thread terminated" << std::endl;
 }
 
-void ThreadLogger::log(const char *format, ...)
+void ThreadLogger::log(LoggingLevelWrapper loggingLevel,const char *format, ...)
 {
+
     va_list args;
     va_start(args, format);
 
@@ -53,12 +54,12 @@ void ThreadLogger::log(const char *format, ...)
     strftime(dateTimeString, sizeof(dateTimeString), "%Y-%m-%d %H:%M:%S", timeinfo);
 
     // Create a new buffer with the date, time, and log message
-    int newLength = length + 20 + 4; // length of dateTimeString + space + null terminator
+    int newLength = length + 20 + 6 + loggingLevel.toString().length(); // length of dateTimeString + space + null terminator
     
     char *newBuffer = new char[newLength];
     
     std::lock_guard<std::mutex> guard(*logMutex);
-    snprintf(newBuffer, newLength, "[%s] %s", dateTimeString, buffer);
+    snprintf(newBuffer, newLength, "[%s] %s: %s", dateTimeString,loggingLevel.toString().c_str(), buffer);
     
     if (buffer != nullptr){
         delete[] buffer;
@@ -73,6 +74,14 @@ void ThreadLogger::log(const char *format, ...)
         delete[] newBuffer;
     }
     // Unlock the mutex after accessing the logger object
+    va_end(args);
+}
+
+void ThreadLogger::log(const char *format, ...){
+    va_list args;
+    va_start(args, format);
+    LoggingLevelWrapper defaultLoggingLevel(LoggingLevel::INFO);
+    ThreadLogger::log(defaultLoggingLevel, format, args);
     va_end(args);
 }
 

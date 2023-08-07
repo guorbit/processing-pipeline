@@ -5,8 +5,10 @@ CC := g++
 SRC_DIR := ./src
 BUILD_DIR := build
 
+DEBUG := FALSE
+
 # Objects and executable
-OBJS := $(addprefix $(BUILD_DIR)/, main.o segfilter.o StateManager.o IdlingState.o ProcessingState.o ThreadLogger.o)
+OBJS := $(addprefix $(BUILD_DIR)/, main.o segfilter.o StateManager.o IdlingState.o ProcessingState.o ThreadLogger.o LoggingLevel.o)
 TARGET := $(BUILD_DIR)/pipeline
 
 LIB := tensorflow
@@ -33,6 +35,10 @@ ifeq ($(LEAK),TRUE)
   CFLAGS += -fsanitize=leak
 endif
 
+# Conditionally add debug flags
+ifeq ($(DEBUG),TRUE)
+  CFLAGS += -g 
+endif
 
 # Include paths
 ifeq ($(LIB),nvinfer)
@@ -72,6 +78,10 @@ $(BUILD_DIR)/ProcessingState.o: $(SRC_DIR)/state/ProcessingState.cpp $(SRC_DIR)/
 $(BUILD_DIR)/ThreadLogger.o: $(SRC_DIR)/utils/ThreadLogger.cpp $(SRC_DIR)/utils/ThreadLogger.hpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/utils/ThreadLogger.cpp -o $@
+
+$(BUILD_DIR)/LoggingLevel.o: $(SRC_DIR)/utils/LoggingLevel.cpp $(SRC_DIR)/utils/LoggingLevel.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/utils/LoggingLevel.cpp -o $@
 
 
 

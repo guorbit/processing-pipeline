@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <cstdarg>
 #include <iomanip>
+#include "LoggingLevel.hpp"
 
 // thread safe logger with implemented queue for threads to push logs to
 #ifndef THREAD_LOGGER_HPP
@@ -25,6 +26,7 @@ public:
     ~ThreadLogger();
 
     void log(const char* format, ...);
+    void log(LoggingLevelWrapper LoggingLevel,const char* format, ...);
 
 };
 

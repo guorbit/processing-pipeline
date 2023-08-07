@@ -14,7 +14,8 @@ StateManager::~StateManager() {
 void StateManager::transitionTo(IState * state) {
     // frees previous state
     if (state == nullptr){
-        StateManager::logger -> log("Error: cannot transition to null state!");
+        LoggingLevelWrapper level(LoggingLevel::ERROR);
+        StateManager::logger -> log(level,"cannot transition to null state!");
         return;
     }
     if (StateManager::state != nullptr){
