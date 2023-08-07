@@ -19,7 +19,7 @@ private:
 public:
     ExportImage();
     ~ExportImage();
-    void LoadImage();
+    void FreeImage();
     void SaveImage();
 };
 

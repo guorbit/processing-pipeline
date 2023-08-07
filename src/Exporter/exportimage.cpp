@@ -11,7 +11,7 @@ else{
     return 0;
 }
 
-ExportImage::~ExportImage() { //Destructor to destroy declared varuables
+ExportImage::~ExportImage() { //Destructor to destroy declared variables
     
     }
 
