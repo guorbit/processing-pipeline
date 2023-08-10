@@ -11,10 +11,12 @@ class Logger : public nvinfer1::ILogger
 } gLogger;
 
 
-TensorRTModel::TensorRTModel()
+TensorRTModel::TensorRTModel(ThreadLogger * logger)
 {
-    printf("TensorRTModel initialized!\n");
+    logger->log("TensorRTModel initialized!\n");
+    TensorRTModel::logger = logger;
 }
+
 
 TensorRTModel::~TensorRTModel()
 {
@@ -37,22 +39,18 @@ std::vector<char> readEngine(const std::string& enginePath)
 
 void TensorRTModel::loadModel(const char *modelPath)
 {
-    std::cout << "TensorRT version: "
-          << NV_TENSORRT_MAJOR << "." 
-          << NV_TENSORRT_MINOR << "." 
-          << NV_TENSORRT_PATCH << "." 
-          << NV_TENSORRT_BUILD << std::endl;
-        // Create a TensorRT runtime
-    if (runtime != nullptr) {
-        printf("Runtime already initialized\n");
+    this->logger->log("Loading TensorRT model...\n");
+    if (this->runtime != nullptr) {
+        this->logger->log("Runtime already initialized\n");
         return;
     }
+
     runtime = nvinfer1::createInferRuntime(gLogger);
 
     std::vector<char> engineData = readEngine(modelPath);
 
     if (engine != nullptr) {
-        printf("Engine already initialized\n");
+        this->logger->log("Engine already initialized\n");
         return;
     }
 
@@ -61,23 +59,25 @@ void TensorRTModel::loadModel(const char *modelPath)
     engineData.clear();
     
     if (engine == nullptr) {
-        printf("Error loading engine\n");
+        this->logger->log("Engine not initialized\n");
         return;
+    }else{
+        this->logger->log("Engine initialized\n");
     }
 }
 
 void TensorRTModel::predict(unsigned char *image, int height, int width, int channels)
 {
     if (engine == nullptr) {
-        printf("Engine not initialized\n");
+        this->logger->log("Engine not initialized\n");
         return;
     }
-    printf("Running TensorRT inference on GPU\n");
+    this->logger->log("Performing TensorRT inference...\n");
         // Allocate GPU memory for the input and output buffers
     float* gpu_input;
     float* gpu_output;
     cudaMalloc((void**)&gpu_input, sizeof(float) * height * width * channels);
-    cudaMalloc((void**)&gpu_output, sizeof(float) * height * width * channels);
+    cudaMalloc((void**)&gpu_output, sizeof(float) * height * width * 7);
 
         // Create an execution context
     nvinfer1::IExecutionContext* context = engine->createExecutionContext();
@@ -89,8 +89,8 @@ void TensorRTModel::predict(unsigned char *image, int height, int width, int cha
     context->execute(1, buffers);
 
     // Copy the output data to the CPU memory
-    float* cpu_output = new float[height * width * channels];
-    cudaMemcpy(cpu_output, gpu_output, sizeof(float) * height * width * channels, cudaMemcpyDeviceToHost);
+    float* cpu_output = new float[height * width * 7];
+    cudaMemcpy(cpu_output, gpu_output, sizeof(float) * height * width * 7, cudaMemcpyDeviceToHost);
 
     // Clean up
     //!TODO: This is possibly the image output from the model so it has to be returned
@@ -99,5 +99,5 @@ void TensorRTModel::predict(unsigned char *image, int height, int width, int cha
     cudaFree(gpu_input);
     cudaFree(gpu_output);
     delete context;
-    printf("TensorRT inference done!\n");
+    this->logger->log("TensorRT inference done!\n");
 }
