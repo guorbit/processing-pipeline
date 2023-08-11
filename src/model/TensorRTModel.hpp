@@ -10,6 +10,7 @@
 #include <sstream>
 #include <vector>
 #include "../utils/ThreadLogger.hpp"
+#include "../utils/LoggingLevel.hpp"
 
 class TensorRTModel : public IModel{
 private:
