@@ -5,9 +5,9 @@
 #include <iostream>
 #include <string>
 #define STB_IMAGE_IMPLEMENTATION
-#include "src/stb_image/stb_image.h"
+#include "stb_image/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION 
-#include "src/stb_image/stb_image_write.h" 
+#include "stb_image/stb_image_write.h" 
 
 class ExportImage {
 private:
@@ -17,9 +17,8 @@ private:
     int channels;
     std::string filepath;
 public:
-    ExportImage();
+    ExportImage(unsigned char* img,int w,int h,int chan, std::string path);
     ~ExportImage();
-    void FreeImage();
     void SaveImage();
 };
 
