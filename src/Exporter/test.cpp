@@ -8,7 +8,7 @@ int test()
 {
     int width, height, channels;
     std::string location = std::filesystem::current_path().string() + "/image.jpg";
-    unsigned char *img = stbi_load("../1499_sat.jpg", &width, &height, &channels, 0);
+    unsigned char *img = stbi_load("../../1499_sat.jpg", &width, &height, &channels, 0);
     if (img == nullptr)
     {
         printf("Image doesn't exist");
