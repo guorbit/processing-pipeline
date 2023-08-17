@@ -4,7 +4,7 @@
 #include <filesystem>
 #include "exportimage.hpp"
 
-int test()
+int main()
 {
     int width, height, channels;
     std::string location = std::filesystem::current_path().string() + "/image.jpg";
@@ -19,11 +19,5 @@ int test()
 
         obj.SaveImage();
     }
-    return 0;
-}
-
-int main()
-{
-    test();
     return 0;
 }
