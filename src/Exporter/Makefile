@@ -2,19 +2,24 @@
 CC := g++
 
 #Set flags
-CFLAGS := -Wall -Werror -Wpedantic
+CFLAGS := -Wall -Werror -Wpedantic -std=c++17 
 
-#Set stbi header file location
-STBI_HEADER_IMAGE = stb_image/stb_image.h
-STBI_HEADER_WRITE = stb_image/stb_image_write.h
+LINKERFLAGS := -lstdc++ 
+
 
 #Define object files 
-OBJS = exportimage.o test.object
+OBJS = test.o exportimage.o 
 OUTPUT = test
 #Create object files 
 
-exportimage.o: exportimage.cpp exportimage.hpp $(STBI_HEADER_IMAGE) $(STBI_HEADER_WRITE)
-	${CC} ${CFLAGS} -c exportimage.cpp -Istb_image
+test: ${OBJS}
+	${CC} ${CFLAGS} -o ${OUTPUT} ${OBJS} ${LINKERFLAGS}
+
+test.o: test.cpp 
+	${CC} ${CFLAGS} -c test.cpp
+
+exportimage.o: exportimage.cpp exportimage.hpp 
+	${CC} ${CFLAGS} -c exportimage.cpp 
 
 #Clean
 clean: 

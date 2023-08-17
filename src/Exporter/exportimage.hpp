@@ -1,13 +1,19 @@
-#ifndef EXP_IMAGE_H
-#define EXP_IMAGE_H
+
 
 #include <stdio.h>
 #include <iostream>
 #include <string>
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION 
 #include "stb_image/stb_image_write.h" 
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+
+#ifndef EXPORTIMAGE_HPP
+#define EXPORTIMAGE_HPP
+
+
+
 
 class ExportImage {
 private:
@@ -22,4 +28,4 @@ public:
     void SaveImage();
 };
 
-#endif 
+#endif // EXPORTIMAGE_HPP
