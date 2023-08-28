@@ -2,7 +2,7 @@
 #define SEG_FILTER_H
 
 #include "IFilter.hpp"
-#include "../model/TensorRTModel.hpp"
+#include "../model/TFLiteModel.hpp"
 #include <stdio.h>
 #include "../utils/ThreadLogger.hpp"
 

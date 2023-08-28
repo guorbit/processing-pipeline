@@ -49,6 +49,18 @@
         "mutex": "cpp",
         "thread": "cpp",
         "queue": "cpp",
-        "iomanip": "cpp"
-    }
+        "iomanip": "cpp",
+        "bit": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "numeric": "cpp",
+        "random": "cpp"
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/mnt/c/Users/andr0/guorbit/processing-pipeline/build",
+            "binaryPath": "/mnt/c/Users/andr0/guorbit/processing-pipeline/build/pipeline",
+            "binaryArgs": []
+        }
+    ]
 }

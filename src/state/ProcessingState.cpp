@@ -37,7 +37,7 @@ int ProcessingState::runStateProcess(){
 
 
     // data processing
-    SegFilter segfilter("model.engine",ProcessingState::logger);
+    SegFilter segfilter("model.pb",ProcessingState::logger);
     segfilter.doProcessing(image, width, height, channels);
     segfilter.doDecision();
     ProcessingState::logger -> log("Processing done");
