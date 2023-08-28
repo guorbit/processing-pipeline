@@ -81,9 +81,15 @@ void ThreadLogger::log(const char *format, ...){
     va_list args;
     va_start(args, format);
     LoggingLevelWrapper defaultLoggingLevel(LoggingLevel::INFO);
-    ThreadLogger::log(defaultLoggingLevel, format, args);
+
+    va_list args_copy;
+    va_copy(args_copy, args);
+    ThreadLogger::log(defaultLoggingLevel, format, args_copy);
+    va_end(args_copy);
+
     va_end(args);
 }
+
 
 void ThreadLogger::logMessage()
 {

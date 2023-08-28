@@ -18,6 +18,10 @@ std::string ProcessingState::getName(){
     return "Processing state";
 }
 
+int ProcessingState::getStateCode(){
+    return 'p';
+}
+
 int ProcessingState::runStateProcess(){
     ProcessingState::logger->log("System entered processing state...");
     // IO reading
@@ -34,10 +38,8 @@ int ProcessingState::runStateProcess(){
     //! however the data itself is correct
     this->logger->log("Loaded image with a width of %d px, a height of %d px and %d channels",width,height,channels);
     
-
-
     // data processing
-    SegFilter segfilter("model.pb",ProcessingState::logger);
+    SegFilter segfilter("model.engine",this -> logger);
     segfilter.doProcessing(image, width, height, channels);
     segfilter.doDecision();
     ProcessingState::logger -> log("Processing done");
