@@ -5,6 +5,7 @@
 #include "../state/ProcessingState.hpp"
 #include "../state/IdlingState.hpp"
 #include "../state/StopState.hpp"
+#include "../bridge/UART.hpp"
 
 #ifndef IO_BRIDGE_HPP
 #define IO_BRIDGE_HPP
@@ -23,6 +24,7 @@ private:
     std::mutex * mutex;
     ThreadLogger * logger;
     IManager * stateManager;
+    UartIO * uart;
 };
 
 

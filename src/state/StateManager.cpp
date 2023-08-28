@@ -6,6 +6,7 @@ StateManager::StateManager(ThreadLogger * logger) {
     StateManager::stateMutex = new std::mutex();
     StateManager::state = nullptr;
     StateManager::logger -> log("State manager initialized...");
+    StateManager::transitioned = false;
     StateManager::shutdownQueue = new std::queue<std::function<void()>>();
 }
 
@@ -27,12 +28,24 @@ IState * StateManager::getRequestedState() {
     return StateManager::requestedState;
 }
 
-void StateManager::requestState(IState * state) {
-    // sets requested state
+void StateManager::setTransitionState(bool transitioned){
+    std::lock_guard<std::mutex> guard(*StateManager::stateMutex);
+    StateManager::transitioned = transitioned;
+}
+bool StateManager::getTransitionState(){
+    std::lock_guard<std::mutex> guard(*StateManager::stateMutex);
+    return StateManager::transitioned;
+}
 
-    
+int StateManager::getStateCode(){
+    return StateManager::state->getStateCode();
+}
+
+void StateManager::requestState(IState * state) {
+    // sets requested state    
     std::lock_guard<std::mutex> guard(*StateManager::stateMutex);
     StateManager::requestedState = state;
+    
 }
 
 void StateManager::transitionTo(IState * state) {
@@ -53,6 +66,7 @@ void StateManager::transitionTo(IState * state) {
    if (StateManager::state -> getName() == "StopState"){
         StateManager::shutdown();
     }
+    
 }
 
 void StateManager::runStateProcess() {

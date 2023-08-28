@@ -8,6 +8,10 @@ std::string IdlingState::getName(){
     return "Idling state";
 }
 
+int IdlingState::getStateCode(){
+    return 'i';
+}
+
 int IdlingState::runStateProcess(){
     if (firstRun){
         logger->log("System entered idling state...");

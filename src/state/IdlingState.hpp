@@ -18,6 +18,7 @@ public:
     virtual ~IdlingState();
     virtual std::string getName();
     virtual int runStateProcess();
+    virtual int getStateCode();
     virtual void setLogger(ThreadLogger * logger);
 };
 

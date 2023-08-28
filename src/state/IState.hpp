@@ -14,6 +14,7 @@ public:
     virtual ~IState() {}
     virtual std::string getName() = 0;
     virtual int runStateProcess() = 0;
+    virtual int getStateCode() = 0;
     virtual void setLogger(ThreadLogger * logger) = 0;
 };
 

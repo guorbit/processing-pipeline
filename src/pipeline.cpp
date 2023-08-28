@@ -36,6 +36,7 @@ void Pipeline::run(){
         if (reqState != nullptr) {
             this->stateManager -> transitionTo(reqState);
             this->stateManager -> requestState(nullptr);
+            this->stateManager -> setTransitionState(true);
         }
     }
 }

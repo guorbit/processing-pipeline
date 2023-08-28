@@ -8,7 +8,7 @@ BUILD_DIR := build
 DEBUG := FALSE
 
 # Objects and executable
-OBJS := $(addprefix $(BUILD_DIR)/, main.o pipeline.o segfilter.o StateManager.o IdlingState.o ProcessingState.o IOBridge.o ThreadLogger.o LoggingLevel.o)
+OBJS := $(addprefix $(BUILD_DIR)/, main.o pipeline.o segfilter.o StateManager.o IdlingState.o ProcessingState.o IOBridge.o UART.o ThreadLogger.o LoggingLevel.o )
 TARGET := $(BUILD_DIR)/pipeline
 
 LIB := tensorflow
@@ -83,6 +83,10 @@ $(BUILD_DIR)/IOBridge.o: $(SRC_DIR)/bridge/IOBridge.cpp $(SRC_DIR)/bridge/IOBrid
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/bridge/IOBridge.cpp -o $@
 
+$(BUILD_DIR)/UART.o: $(SRC_DIR)/bridge/UART.cpp $(SRC_DIR)/bridge/UART.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/bridge/UART.cpp -o $@
+
 $(BUILD_DIR)/ThreadLogger.o: $(SRC_DIR)/utils/ThreadLogger.cpp $(SRC_DIR)/utils/ThreadLogger.hpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/utils/ThreadLogger.cpp -o $@
@@ -90,6 +94,8 @@ $(BUILD_DIR)/ThreadLogger.o: $(SRC_DIR)/utils/ThreadLogger.cpp $(SRC_DIR)/utils/
 $(BUILD_DIR)/LoggingLevel.o: $(SRC_DIR)/utils/LoggingLevel.cpp $(SRC_DIR)/utils/LoggingLevel.hpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/utils/LoggingLevel.cpp -o $@
+
+
 
 
 
