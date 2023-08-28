@@ -13,7 +13,7 @@ void SegFilter::doDecision() {
 }
 
 SegFilter::SegFilter(const char *modelPath,ThreadLogger * logger) {
-    
+    logger -> log("Mounting segmentation filter...");
     IModel * model = new TFLiteModel(logger);
     model -> loadModel(modelPath);
     SegFilter::model = model;
