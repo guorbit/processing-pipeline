@@ -26,7 +26,7 @@ ifeq ($(LIB),nvinfer)
 endif
 
 # Compiler flags
-CFLAGS := -Wall -Werror -Wpedantic 
+CFLAGS := -Wall -Werror -Wpedantic -std=c++17 
 
 LINKERFLAGS := -lstdc++ -lpthread
 
