@@ -28,23 +28,20 @@ ThreadLogger::~ThreadLogger()
     std::cout << "Logger thread terminated" << std::endl;
 }
 
-void ThreadLogger::log(LoggingLevelWrapper loggingLevel,const char *format, ...)
-{
-
-    va_list args;
-    va_start(args, format);
+void ThreadLogger::insertLog(LoggingLevelWrapper loggingLevel,const char *format,va_list args){
+  
 
     // Determine the length of the formatted string
     int length = vsnprintf(NULL, 0, format, args);
-    va_end(args); // end variable argument list
+
 
     // Allocate a buffer to hold the formatted string
     char *buffer = new char[length + 1];
     
-    va_start(args, format); // start variable argument list again
+
     // Format the string into the buffer
     vsnprintf(buffer, length + 1, format, args);
-    va_end(args); // end variable argument list
+
     // Get the current date and time
     time_t currentTime = time(nullptr);
     struct tm *timeinfo = localtime(&currentTime);
@@ -77,16 +74,20 @@ void ThreadLogger::log(LoggingLevelWrapper loggingLevel,const char *format, ...)
     va_end(args);
 }
 
+void ThreadLogger::log(LoggingLevelWrapper loggingLevel,const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    ThreadLogger::insertLog(loggingLevel,format, args);
+    va_end(args);
+    
+}
+
 void ThreadLogger::log(const char *format, ...){
     va_list args;
     va_start(args, format);
     LoggingLevelWrapper defaultLoggingLevel(LoggingLevel::INFO);
-
-    va_list args_copy;
-    va_copy(args_copy, args);
-    ThreadLogger::log(defaultLoggingLevel, format, args_copy);
-    va_end(args_copy);
-
+    ThreadLogger::insertLog(defaultLoggingLevel, format, args);
     va_end(args);
 }
 
