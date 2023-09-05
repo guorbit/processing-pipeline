@@ -8,7 +8,7 @@ BUILD_DIR := build
 DEBUG := FALSE
 
 # Objects and executable
-OBJS := $(addprefix $(BUILD_DIR)/, main.o pipeline.o segfilter.o StateManager.o IdlingState.o ProcessingState.o IOBridge.o UART.o ThreadLogger.o LoggingLevel.o )
+OBJS := $(addprefix $(BUILD_DIR)/, main.o pipeline.o StateManager.o IdlingState.o ProcessingState.o segfilter.o IOBridge.o UART.o Reader.o ThreadLogger.o LoggingLevel.o )
 TARGET := $(BUILD_DIR)/pipeline
 
 LIB := tensorflow
@@ -95,7 +95,9 @@ $(BUILD_DIR)/LoggingLevel.o: $(SRC_DIR)/utils/LoggingLevel.cpp $(SRC_DIR)/utils/
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/utils/LoggingLevel.cpp -o $@
 
-
+$(BUILD_DIR)/Reader.o: $(SRC_DIR)/utils/Reader.cpp $(SRC_DIR)/utils/Reader.hpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/utils/Reader.cpp -o $@
 
 
 

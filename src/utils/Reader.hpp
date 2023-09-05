@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <tuple>
 
 #ifndef READER_HPP
 #define READER_HPP
@@ -17,13 +18,14 @@ public:
     int unmountDrive();
     bool isMounted();
     int isAvailable();
-    unsigned char * read();
+    std::tuple<unsigned char*, int, int, int> read();
 
 
 private:
     ThreadLogger * logger;
     std::string mountPoint;
     std::string usbDevice;
+   
 };
 
 

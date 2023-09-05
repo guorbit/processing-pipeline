@@ -94,11 +94,11 @@ int Reader::isAvailable(){
     return 1;
 }
 
-unsigned char * Reader::read(){
+std::tuple<unsigned char*, int, int, int> Reader::read(){
     const auto existingDir = this -> mountPoint; // Should exist in file system.
     if (!fs::exists(existingDir) || !fs::is_directory(existingDir)) {
         Reader::logger->log("Read target is not mounted");
-        return nullptr;
+        return std::make_tuple(nullptr, 0, 0, 0);
     }
 
     Reader::logger->log("Read target is mounted for reading");
@@ -115,34 +115,34 @@ unsigned char * Reader::read(){
             LoggingLevelWrapper level(LoggingLevel::ERROR);
             this->logger->log(level,"Error loading image: ", stbi_failure_reason());
             this->logger->log("Skipping processing stage...");
-            return nullptr;
+            return std::make_tuple(nullptr, 0, 0, 0);
         }
         this -> logger -> log("Loaded image with a width of %d px, a height of %d px and %d channels",width,height,channels);
-        return image;
+        return std::make_tuple(image, width, height, channels);
     }
 
     if (counter == 0){
         Reader::logger->log("No files to read");
-        return nullptr;
+        return std::make_tuple(nullptr, 0, 0, 0);
     }
 
-    return nullptr;
+    return std::make_tuple(nullptr, 0, 0, 0);
 }
 
-int main(){
-    ThreadLogger * logger = new ThreadLogger();
-    Reader * reader = new Reader(logger);
-    if (reader->isMounted()){
-        reader->unmountDrive();
-    }
-    reader->mountDrive();
-    reader->isAvailable();
-    auto image = reader->read();
-    if (image != nullptr){
-        stbi_image_free(image);
-    }
-    reader->unmountDrive();
-    delete reader;
-    delete logger;
-    return 0;
-}
+// int main(){
+//     ThreadLogger * logger = new ThreadLogger();
+//     Reader * reader = new Reader(logger);
+//     if (reader->isMounted()){
+//         reader->unmountDrive();
+//     }
+//     reader->mountDrive();
+//     reader->isAvailable();
+//     auto image = reader->read();
+//     if (image != nullptr){
+//         stbi_image_free(image);
+//     }
+//     reader->unmountDrive();
+//     delete reader;
+//     delete logger;
+//     return 0;
+// }
