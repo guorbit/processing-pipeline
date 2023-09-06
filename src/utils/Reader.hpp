@@ -18,14 +18,17 @@ public:
     int unmountDrive();
     bool isMounted();
     int isAvailable();
+    void removeLoaded();
     std::tuple<unsigned char*, int, int, int> read();
 
 
 private:
     ThreadLogger * logger;
     std::string mountPoint;
+    std::string subFolder;
     std::string usbDevice;
-   
+    std::string lastLoaded = "";
+    
 };
 
 

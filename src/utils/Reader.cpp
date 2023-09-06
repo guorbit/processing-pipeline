@@ -8,6 +8,8 @@ Reader::Reader(ThreadLogger * logger){
     Reader::logger = logger;
     Reader::usbDevice = "/dev/sda1";
     Reader::mountPoint = "/media/usbdrive";
+    Reader::subFolder = "/DCIM/Photo";
+
 }
 
 Reader::~Reader(){
@@ -71,31 +73,27 @@ bool Reader::isMounted(){
 //Maybe obsolete and not going to be needed.
 //Further testing is required.
 int Reader::isAvailable(){
-    const auto existingDir = this -> mountPoint; // Should exist in file system.
-    if (!fs::exists(existingDir) || !fs::is_directory(existingDir)) {
-        Reader::logger->log("Read target is not mounted");
-        return -1;
-    }
-    Reader::logger->log("Read target is mounted");
-
+    const auto existingDir = this -> mountPoint + this -> subFolder; // Should exist in file system.
     int counter = 0;
-
+    this -> logger -> log("Checking for files to read from %s", existingDir.c_str());
     for (const auto& entry : std::filesystem::directory_iterator(existingDir)) {
         std::string path = entry.path().string();
+        
         std::string message = "Found file: " + path;
         Reader::logger->log(message.c_str());
         counter++;
     }
     if (counter == 0){
         Reader::logger->log("No files to read");
-        return -0;
+        return 0;
     }
 
     return 1;
 }
 
 std::tuple<unsigned char*, int, int, int> Reader::read(){
-    const auto existingDir = this -> mountPoint; // Should exist in file system.
+    const auto existingDir = this -> mountPoint+ this -> mountPoint; // Should exist in file system.
+    Reader::logger -> log("%s", existingDir.c_str());
     if (!fs::exists(existingDir) || !fs::is_directory(existingDir)) {
         Reader::logger->log("Read target is not mounted");
         return std::make_tuple(nullptr, 0, 0, 0);
@@ -117,6 +115,7 @@ std::tuple<unsigned char*, int, int, int> Reader::read(){
             this->logger->log("Skipping processing stage...");
             return std::make_tuple(nullptr, 0, 0, 0);
         }
+        this -> lastLoaded = path;
         this -> logger -> log("Loaded image with a width of %d px, a height of %d px and %d channels",width,height,channels);
         return std::make_tuple(image, width, height, channels);
     }
@@ -128,6 +127,19 @@ std::tuple<unsigned char*, int, int, int> Reader::read(){
 
     return std::make_tuple(nullptr, 0, 0, 0);
 }
+
+void Reader::removeLoaded(){
+    if (this -> lastLoaded != ""){
+        if (fs::remove(this -> lastLoaded)) {
+            std::cout << "File deleted successfully.\n";
+        } else {
+            std::cout << "Error deleting the file.\n";
+        }
+    }
+    this -> lastLoaded = "";
+}
+
+
 
 // int main(){
 //     ThreadLogger * logger = new ThreadLogger();

@@ -6,7 +6,7 @@ UartIO::UartIO(ThreadLogger *logger)
     // SETUP SERIAL WORLD
 
     struct termios port_options; // Create the structure
-
+    int uartId = -1;
     tcgetattr(uartId, &port_options); // Get the current attributes of the Serial port
 
     //------------------------------------------------

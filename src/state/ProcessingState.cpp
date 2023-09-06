@@ -48,6 +48,7 @@ int ProcessingState::runStateProcess(){
     if (!this -> reader -> isAvailable()){
         LoggingLevelWrapper level(LoggingLevel::WARNING);
         this -> logger -> log(level,"No files are availabe to process");
+        usleep(1000000); //1 second idle
         return 2;
     }
 
@@ -87,7 +88,7 @@ int ProcessingState::runStateProcess(){
     if (image != nullptr){
         stbi_image_free(image);
     }
-    
+    this -> reader -> removeLoaded();
     this -> progress = 7;
     return 0;
 }
