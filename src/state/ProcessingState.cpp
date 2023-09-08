@@ -1,10 +1,39 @@
 #include "ProcessingState.hpp"
 
 // #define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "../stb_files/stb_image_resize.h"
 
 #include "../stb_files/stb_image.h"
 
 using namespace std;
+
+unsigned char* cropImageToSquare(unsigned char* imgData, int width, int height, int channels) {
+    int newDim = std::min(width, height);
+    unsigned char* newImgData = new unsigned char[newDim * newDim * channels];
+    
+    int xOffset = (width - newDim) / 2;
+    int yOffset = (height - newDim) / 2;
+
+    for (int y = 0; y < newDim; ++y) {
+        for (int x = 0; x < newDim; ++x) {
+            for (int c = 0; c < channels; ++c) {
+                int oldIndex = ((y + yOffset) * width + (x + xOffset)) * channels + c;
+                int newIndex = (y * newDim + x) * channels + c;
+                newImgData[newIndex] = imgData[oldIndex];
+            }
+        }
+    }
+
+    return newImgData;
+}
+
+unsigned char* resizeImage(unsigned char* imgData, int width, int height, int channels, int newWidth, int newHeight) {
+    unsigned char* resizedImgData = new unsigned char[newWidth * newHeight * channels];
+    stbir_resize_uint8(imgData, width, height, 0, resizedImgData, newWidth, newHeight, 0, channels);
+    return resizedImgData;
+}
+
 
 
 ProcessingState::ProcessingState(){     
@@ -18,6 +47,8 @@ ProcessingState::~ProcessingState(){
     ProcessingState::logger -> log("System exiting processing state");
 
 }
+
+
 
 std::string ProcessingState::getName(){
     return "Processing state";
@@ -40,6 +71,7 @@ int ProcessingState::runStateProcess(){
     } else {
         LoggingLevelWrapper level(LoggingLevel::ERROR);
         this -> logger -> log(level,"USB drive failed to mount");
+        usleep(1000000); //1 second idle
         return 1;
     }
 
@@ -61,11 +93,27 @@ int ProcessingState::runStateProcess(){
         LoggingLevelWrapper level(LoggingLevel::ERROR);
         this -> logger -> log(level,"Error reading image");
         this->logger->log("Skipping processing stage...");
+        usleep(1000000); //1 second idle
         return 1;
     }
     int width = std::get<1>(imageTuple);
     int height = std::get<2>(imageTuple);
     int channels = std::get<3>(imageTuple);
+
+    // cut image to 1:1 ratio
+    
+    unsigned char* croppedImage = cropImageToSquare(image, width, height, channels);
+    stbi_image_free(image);
+
+    // Resize image to 512x512x3
+
+    int targetWidth = 512;
+    int targetHeight = 512;
+
+    unsigned char* resizedImage = resizeImage(croppedImage, width, height, channels, targetWidth, targetHeight);
+    delete croppedImage;
+
+
     this -> progress = 4;
     // int width, height, channels;
     // unsigned char* image = stbi_load("1499_sat.jpg", &width, &height, &channels, 0);
@@ -76,7 +124,7 @@ int ProcessingState::runStateProcess(){
     
     // data processing
     
-    this -> segFilter -> doProcessing(image, width, height, channels);
+    this -> segFilter -> doProcessing(resizedImage, width, height, channels);
     this -> progress = 5;
     this -> segFilter -> doDecision();
     this -> progress = 6;
@@ -86,7 +134,7 @@ int ProcessingState::runStateProcess(){
     // IO writing
     
     if (image != nullptr){
-        stbi_image_free(image);
+        delete resizedImage;
     }
     this -> reader -> removeLoaded();
     this -> progress = 7;

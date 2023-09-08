@@ -78,9 +78,6 @@ int Reader::isAvailable(){
     this -> logger -> log("Checking for files to read from %s", existingDir.c_str());
     for (const auto& entry : std::filesystem::directory_iterator(existingDir)) {
         std::string path = entry.path().string();
-        
-        std::string message = "Found file: " + path;
-        Reader::logger->log(message.c_str());
         counter++;
     }
     if (counter == 0){
@@ -88,11 +85,11 @@ int Reader::isAvailable(){
         return 0;
     }
 
-    return 1;
+    return counter;
 }
 
 std::tuple<unsigned char*, int, int, int> Reader::read(){
-    const auto existingDir = this -> mountPoint+ this -> mountPoint; // Should exist in file system.
+    const auto existingDir = this -> mountPoint+ this -> subFolder; // Should exist in file system.
     Reader::logger -> log("%s", existingDir.c_str());
     if (!fs::exists(existingDir) || !fs::is_directory(existingDir)) {
         Reader::logger->log("Read target is not mounted");
@@ -103,10 +100,10 @@ std::tuple<unsigned char*, int, int, int> Reader::read(){
     int counter = 0;
     // read the first file
     int width, height, channels;
+    //log number of files in directory
+    Reader::logger->log("Found %d files in directory", Reader::isAvailable());
     for (const auto& entry : std::filesystem::directory_iterator(existingDir)) {
         std::string path = entry.path().string();
-        std::string message = "Found file: " + path;
-        Reader::logger->log(message.c_str());
         unsigned char * image = stbi_load(path.c_str(), &width, &height, &channels, 0);
         if (image == nullptr) {
             // Process the image
