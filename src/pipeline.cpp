@@ -6,7 +6,7 @@ Pipeline::Pipeline(){
     this->logger = new ThreadLogger();
     logger->log("Starting system pipeline...");
     this->stateManager = new StateManager(logger);
-    this->stateManager->transitionTo(new IdlingState());
+    this->stateManager->transitionTo(new ProcessingState());
     this->ioBridge = new IOBridge(logger, stateManager);
     stateManager -> pushShutdown([this](){this -> stop();});
 }

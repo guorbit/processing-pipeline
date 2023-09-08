@@ -3,8 +3,8 @@
 
 
 
-void SegFilter::doProcessing(unsigned char* image, int width, int height, int channels) {
-    SegFilter::model -> predict(image, width, height, channels);   
+int * SegFilter::doProcessing(unsigned char* image, int width, int height, int channels) {
+    return SegFilter::model -> predict(image, width, height, channels);   
 }
 
 void SegFilter::doDecision() {
@@ -14,7 +14,7 @@ void SegFilter::doDecision() {
 
 SegFilter::SegFilter(const char *modelPath,ThreadLogger * logger) {
     logger -> log("Mounting segmentation filter...");
-    IModel * model = new TFLiteModel(logger);
+    IModel * model = new TensorRTModel(logger);
     model -> loadModel(modelPath);
     SegFilter::model = model;
 

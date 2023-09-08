@@ -43,7 +43,7 @@ void TFLiteModel::loadModel(const char *modelPath)
     TF_DeleteBuffer(model_buffer);
 }
 
-void TFLiteModel::predict(unsigned char *image, int height, int width, int channels)
+int * TFLiteModel::predict(unsigned char *image, int height, int width, int channels)
 {
 
     TFLiteModel::logger -> log("Performing inference");
@@ -51,7 +51,7 @@ void TFLiteModel::predict(unsigned char *image, int height, int width, int chann
     {
         LoggingLevelWrapper level(LoggingLevel::ERROR);
         TFLiteModel::logger -> log(level, "Graph not initialized");
-        return;
+        return nullptr;
     }
     // Set input tensor
     TF_DataType dtype = TF_UINT8;
@@ -69,13 +69,13 @@ void TFLiteModel::predict(unsigned char *image, int height, int width, int chann
     {
         LoggingLevelWrapper level(LoggingLevel::ERROR);
         TFLiteModel::logger -> log(level,"TF object session not initialized");
-        return;
+        return nullptr;
     }
     if (status == nullptr)
     {
         LoggingLevelWrapper level(LoggingLevel::ERROR);
         TFLiteModel::logger -> log(level,"TF object status not initialized");
-        return;
+        return nullptr;
     }
 
     this -> logger -> log("Running session");
@@ -85,7 +85,7 @@ void TFLiteModel::predict(unsigned char *image, int height, int width, int chann
     this -> logger -> log("Session run");
     if (input_tensor)
         TF_DeleteTensor(input_tensor);
-    
+    return nullptr;
 }
 void TFLiteModel::deallocator(void *data, size_t length, void *arg)
 {

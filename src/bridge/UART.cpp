@@ -6,9 +6,9 @@ UartIO::UartIO(ThreadLogger *logger)
     // SETUP SERIAL WORLD
 
     struct termios port_options; // Create the structure
-
+    uartId = open(uart_target, O_RDWR | O_NOCTTY);
     tcgetattr(uartId, &port_options); // Get the current attributes of the Serial port
-
+    
     //------------------------------------------------
     //  OPEN THE UART
     //------------------------------------------------
@@ -24,7 +24,8 @@ UartIO::UartIO(ThreadLogger *logger)
     //                 Caution: VMIN and VTIME flags are ignored if O_NONBLOCK flag is set.
     //	    O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.uartId = open("/dev/ttyTHS1", O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
 
-    uartId = open(uart_target, O_RDWR | O_NOCTTY);
+    
+
 
     tcflush(uartId, TCIFLUSH);
     tcflush(uartId, TCIOFLUSH);

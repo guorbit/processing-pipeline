@@ -22,7 +22,7 @@ public:
     TFLiteModel(ThreadLogger * logger);
     virtual ~TFLiteModel();
     virtual void loadModel(const char *modelPath);
-    virtual void predict(unsigned char* image, int height, int width, int channels);
+    virtual int * predict(unsigned char* image, int height, int width, int channels);
 };
 
 #endif // MODEL_HPP

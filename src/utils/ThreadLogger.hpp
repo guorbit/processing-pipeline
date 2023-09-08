@@ -20,7 +20,7 @@ private:
     void logMessage();
     std::thread logThread;
     bool stopLogger;
-
+    void insertLog(LoggingLevelWrapper LoggingLevel,const char* format, va_list args);
 public:
     ThreadLogger();
     ~ThreadLogger();

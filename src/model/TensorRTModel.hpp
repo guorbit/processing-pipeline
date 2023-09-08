@@ -21,7 +21,7 @@ public:
     TensorRTModel(ThreadLogger * logger);
     virtual ~TensorRTModel();
     virtual void loadModel(const char *modelPath);
-    virtual void predict(unsigned char* image, int height, int width, int channels);
+    virtual int * predict(unsigned char* image, int height, int width, int channels);
 };
 
 #endif // TENSORRTMODEL_HPP

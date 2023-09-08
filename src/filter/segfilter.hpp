@@ -2,7 +2,7 @@
 #define SEG_FILTER_H
 
 #include "IFilter.hpp"
-#include "../model/TFLiteModel.hpp"
+#include "../model/TensorRTModel.hpp"
 #include <stdio.h>
 #include "../utils/ThreadLogger.hpp"
 
@@ -14,7 +14,7 @@ private:
 public:
     SegFilter(const char *modelPath,ThreadLogger * logger);
     ~SegFilter();
-    virtual void doProcessing(unsigned char* image, int width, int height, int channels);
+    virtual int * doProcessing(unsigned char* image, int width, int height, int channels);
     virtual void doDecision();
     
 };
