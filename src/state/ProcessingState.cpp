@@ -124,16 +124,18 @@ int ProcessingState::runStateProcess(){
     
     // data processing
     
-    this -> segFilter -> doProcessing(resizedImage, width, height, channels);
+    int * output = this -> segFilter -> doProcessing(resizedImage, width, height, channels);
     this -> progress = 5;
     this -> segFilter -> doDecision();
     this -> progress = 6;
     ProcessingState::logger -> log("Processing done");
     // image compression
-
+    //! due to time constraints this part is not implemented
     // IO writing
-    
-    if (image != nullptr){
+
+    // freeing data
+    delete[] output;
+    if (resizedImage != nullptr){
         delete resizedImage;
     }
     this -> reader -> removeLoaded();

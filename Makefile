@@ -26,9 +26,9 @@ ifeq ($(LIB),nvinfer)
 endif
 
 # Compiler flags
-CFLAGS := -Wall -Werror -Wpedantic -std=c++17 
+CFLAGS := -Wall -Werror -Wpedantic -std=c++17 -fopenmp
 
-LINKERFLAGS := -lstdc++ -lpthread
+LINKERFLAGS := -lstdc++ -lpthread 
 
 # Conditionally add leak sanitizer
 ifeq ($(LEAK),TRUE)

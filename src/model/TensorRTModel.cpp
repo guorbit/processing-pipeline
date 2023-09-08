@@ -3,8 +3,9 @@
 class Logger : public nvinfer1::ILogger
 {
     ThreadLogger *logger;
-    
-    public:void setLogger(ThreadLogger *logger)
+
+public:
+    void setLogger(ThreadLogger *logger)
     {
         Logger::logger = logger;
     }
@@ -90,12 +91,12 @@ void TensorRTModel::loadModel(const char *modelPath)
     }
 }
 
-void TensorRTModel::predict(unsigned char *image, int height, int width, int channels)
+int *TensorRTModel::predict(unsigned char *image, int height, int width, int channels)
 {
     if (engine == nullptr)
     {
         this->logger->log("Engine not initialized\n");
-        return;
+        return nullptr;
     }
     this->logger->log("Performing TensorRT inference...\n");
     // Allocate GPU memory for the input and output buffers
@@ -117,12 +118,32 @@ void TensorRTModel::predict(unsigned char *image, int height, int width, int cha
     float *cpu_output = new float[height * width * 7];
     cudaMemcpy(cpu_output, gpu_output, sizeof(float) * height * width * 7, cudaMemcpyDeviceToHost);
 
-    // Clean up
-    //! TODO: This is possibly the image output from the model so it has to be returned
-    delete[] cpu_output;
-
     cudaFree(gpu_input);
     cudaFree(gpu_output);
+
+    int *max_indices = new int[height * width];
     delete context;
+
+    // Parallelized post-processing using OpenMP
+    #pragma omp parallel for
+    for (int i = 0; i < height * width; ++i)
+    {
+        float max_value = cpu_output[i * 7];
+        int max_index = 0;
+        for (int j = 1; j < 7; ++j)
+        {
+            if (cpu_output[i * 7 + j] > max_value)
+            {
+                max_value = cpu_output[i * 7 + j];
+                max_index = j;
+            }
+        }
+        max_indices[i] = max_index;
+    }
+    // Clean up
+    //! TODO: This is possibly the image output from the model so it has to be returned
+
+   
     this->logger->log("TensorRT inference done!\n");
+    return max_indices;
 }

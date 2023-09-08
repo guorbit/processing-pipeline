@@ -6,6 +6,7 @@
 #include "../utils/LoggingLevel.hpp"
 #include "../utils/Reader.hpp"
 #include <tuple>
+#include <omp.h>
 
 #ifndef PROCESSING_STATE_HPP
 #define PROCESSING_STATE_HPP
