@@ -2,7 +2,13 @@
 #define SEG_FILTER_H
 
 #include "IFilter.hpp"
-#include "../model/TensorRTModel.hpp"
+#ifdef USE_MOCK
+#include "../hal_mock/model/MockTRT.hpp"
+#else
+#include "../hal_jetson/model/TensorRTModel.hpp"
+#endif
+
+
 #include <stdio.h>
 #include "../utils/ThreadLogger.hpp"
 

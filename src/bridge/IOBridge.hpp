@@ -5,7 +5,13 @@
 #include "../state/ProcessingState.hpp"
 #include "../state/IdlingState.hpp"
 #include "../state/StopState.hpp"
-#include "../bridge/UART.hpp"
+
+
+#ifdef USE_MOCK
+#include "../hal_mock/bridge/UART.hpp"
+#else
+#include "../hal_jetson/bridge/UART.hpp"
+#endif
 
 #ifndef IO_BRIDGE_HPP
 #define IO_BRIDGE_HPP
