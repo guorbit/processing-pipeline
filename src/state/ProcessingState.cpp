@@ -204,17 +204,6 @@ int ProcessingState::runStateProcess() {
     unsigned char *rgbOut = convertMaskToRGB(output, width * height, width, height);
     // unsigned char* pixelOut = converToPixelMask(rgbOut, width, height, 3);
 
-    // arbitrary decision logic
-    const int DECISION_THRESHOLD = 80;
-    int decisionMetric = output[0];
-    if (decisionMetric > DECISION_THRESHOLD) {
-        ExportImage oImage(resizedImage, width, height, channels, "kept_image.jpg", this->logger);
-        oImage.SaveImage(fileName);
-        this->logger->log("Image kept based on model decision.");
-    } else {
-        this->logger->log("Image discarded based on model decision.");
-    }
-
     ExportImage oMask(rgbOut, width, height, 3, "output.jpg", this->logger);
     oMask.SaveImage(fileName);
     delete[] output;
@@ -233,31 +222,4 @@ void ProcessingState::setLogger(ThreadLogger *logger)
     ProcessingState::segFilter = new SegFilter("model.engine", this->logger);
     ProcessingState::reader = new Reader(this->logger);
     logger->log("Processing state initialized...\n");
-}
-
-void testArbitraryDecision() {
-    ProcessingState ps;
-
-    ThreadLogger logger;
-    ps.setLogger(&logger);
-
-    int threshold = 80;
-
-    std::cout << "Testing decision logic:" << std::endl;
-
-    int decisionValueBelow = 75;
-    ps.segFilter->setMockModelOutput(mockModelOutput(decisionValueBelow));
-    std::cout << "Test with decision value " << decisionValueBelow << ": ";
-    ps.runStateProcess(); // This should result in discarding the image
-
-    int decisionValueAbove = 85;
-    ps.segFilter->setMockModelOutput(mockModelOutput(decisionValueAbove));
-    std::cout << "Test with decision value " << decisionValueAbove << ": ";
-    ps.runStateProcess(); // This should result in keeping the image
-
-}
-
-int main() {
-    testArbitraryDecision();
-    return 0;
 }
