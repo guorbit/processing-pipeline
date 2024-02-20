@@ -15,19 +15,15 @@ LIB := tensorflow
 
 LEAK := FALSE
 
+DEV := TRUE
+
 # Conditionally add TFLiteModel.o if target is tensorflow
+
 ifeq ($(LIB),tensorflow)
   OBJS += $(BUILD_DIR)/TFLiteModel.o
 endif
 
-# Conditionally add TensorRTModel.o if target is nvinfer
-ifeq ($(LIB),nvinfer)
-  OBJS += $(BUILD_DIR)/TensorRTModel.o
-endif
-
-# Compiler flags
 CFLAGS := -Wall -Werror -Wpedantic -std=c++17 -fopenmp
-
 LINKERFLAGS := -lstdc++ -lpthread 
 
 # Conditionally add leak sanitizer
@@ -40,19 +36,29 @@ ifeq ($(DEBUG),TRUE)
   CFLAGS += -g 
 endif
 
-# Include paths
-ifeq ($(LIB),nvinfer)
-  CFLAGS += -I/usr/local/cuda/include 
-  LINKERFLAGS += -lcudart -lcuda -L/usr/local/cuda/lib64
+ifeq ($(DEV),TRUE)
+  CFLAGS += -DUSE_MOCK
+else ifeq ($(DEV),FALSE)
+  LINKERFLAGS += -l$(LIB)
 
 endif
 
-# Library to link against (default to tensorflow)
+ifeq ($(LIB),nvinfer)
+  ifeq ($(DEV),TRUE)
+	OBJS += $(BUILD_DIR)/MockTRT.o
+  else
+    OBJS += $(BUILD_DIR)/TensorRTModel.o
+	CFLAGS += -I/usr/local/cuda/include 
+    LINKERFLAGS += -lcudart -lcuda -L/usr/local/cuda/lib64
+  endif
+endif
 
+HAL_FOLDER := hal_mock
+# Include paths
 
 # Executable
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) -l$(LIB) $(LINKERFLAGS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(LINKERFLAGS)
 
 # Object file rules
 $(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(SRC_DIR)/filter/IFilter.hpp $(SRC_DIR)/filter/segfilter.hpp
@@ -83,9 +89,9 @@ $(BUILD_DIR)/IOBridge.o: $(SRC_DIR)/bridge/IOBridge.cpp $(SRC_DIR)/bridge/IOBrid
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/bridge/IOBridge.cpp -o $@
 
-$(BUILD_DIR)/UART.o: $(SRC_DIR)/bridge/UART.cpp $(SRC_DIR)/bridge/UART.hpp
+$(BUILD_DIR)/UART.o: $(SRC_DIR)/$(HAL_FOLDER)/bridge/UART.cpp $(SRC_DIR)/$(HAL_FOLDER)/bridge/UART.hpp
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c $(SRC_DIR)/bridge/UART.cpp -o $@
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/$(HAL_FOLDER)/bridge/UART.cpp -o $@
 
 $(BUILD_DIR)/exportimage.o: $(SRC_DIR)/Exporter/exportimage.cpp $(SRC_DIR)/Exporter/exportimage.hpp
 	@mkdir -p $(@D)
@@ -104,20 +110,23 @@ $(BUILD_DIR)/Reader.o: $(SRC_DIR)/utils/Reader.cpp $(SRC_DIR)/utils/Reader.hpp
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/utils/Reader.cpp -o $@
 
 
-
-
-
-ifeq ($(LIB),tensorflow)
 $(BUILD_DIR)/TFLiteModel.o: $(SRC_DIR)/model/TFLiteModel.cpp $(SRC_DIR)/model/TFLiteModel.hpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/model/TFLiteModel.cpp -o $@
-endif
 
-ifeq ($(LIB),nvinfer)
-$(BUILD_DIR)/TensorRTModel.o: $(SRC_DIR)/model/TensorRTModel.cpp $(SRC_DIR)/model/TensorRTModel.hpp
+
+$(BUILD_DIR)/MockTRT.o: $(SRC_DIR)/hal_mock/model/MockTRT.cpp $(SRC_DIR)/hal_mock/model/MockTRT.hpp
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c $(SRC_DIR)/model/TensorRTModel.cpp -o $@
-endif
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/hal_mock/model/MockTRT.cpp -o $@
+
+
+
+
+$(BUILD_DIR)/TensorRTModel.o: $(SRC_DIR)/model/TensorRTModel.cpp $(SRC_DIR)/model/TensorRTModel.hpp
+		@mkdir -p $(@D)
+		$(CC) $(CFLAGS) -c $(SRC_DIR)/model/TensorRTModel.cpp -o $@
+
+
 # Clean rule
 clean:
 	rm -rf $(BUILD_DIR)
