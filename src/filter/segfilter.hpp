@@ -22,7 +22,6 @@ public:
     ~SegFilter();
     virtual int * doProcessing(unsigned char* image, int width, int height, int channels);
     virtual void doDecision();
-    
 };
 
 #endif // SEG_FILTER_H
