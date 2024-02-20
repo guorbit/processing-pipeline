@@ -118,22 +118,17 @@ int ProcessingState::getStateCode()
     return 'p';
 }
 
-int ProcessingState::runStateProcess()
-{
+int ProcessingState::runStateProcess() {
     this->progress = 1;
     ProcessingState::logger->log("System entered processing state...");
     // IO reading
-    if (!this->reader->isMounted())
-    {
+    if (!this->reader->isMounted()) {
         this->reader->mountDrive();
     }
 
-    if (this->reader->isMounted())
-    {
+    if (this->reader->isMounted()) {
         this->logger->log("USB drive mounted successfully");
-    }
-    else
-    {
+    } else {
         LoggingLevelWrapper level(LoggingLevel::ERROR);
         this->logger->log(level, "USB drive failed to mount");
         usleep(1000000); // 1 second idle
@@ -142,21 +137,19 @@ int ProcessingState::runStateProcess()
 
     this->progress = 2;
 
-    if (!this->reader->isAvailable())
-    {
+    if (!this->reader->isAvailable()) {
         LoggingLevelWrapper level(LoggingLevel::WARNING);
         this->logger->log(level, "No files are availabe to process");
         usleep(1000000); // 1 second idle
         return 2;
     }
 
-    std::tuple<unsigned char *, int, int, int,std::string> imageTuple = this->reader->read();
+    std::tuple<unsigned char *, int, int, int, std::string> imageTuple = this->reader->read();
 
     this->progress = 3;
 
     unsigned char *image = std::get<0>(imageTuple);
-    if (image == nullptr)
-    {
+    if (image == nullptr) {
         LoggingLevelWrapper level(LoggingLevel::ERROR);
         this->logger->log(level, "Error reading image");
         this->logger->log("Skipping processing stage...");
@@ -168,14 +161,14 @@ int ProcessingState::runStateProcess()
     int height = std::get<2>(imageTuple);
     int channels = std::get<3>(imageTuple);
     std::string fileName = std::get<4>(imageTuple);
-    this -> logger -> log("Loaded filename: %s",fileName.c_str());
-    ExportImage oImage(image, width, height, channels, std::string("input.jpg"),this->logger);
-    this -> logger -> log("saving input image");
+    this->logger->log("Loaded filename: %s", fileName.c_str());
+    ExportImage oImage(image, width, height, channels, std::string("input.jpg"), this->logger);
+    this->logger->log("saving input image");
     oImage.SaveImage(fileName);
     // cut image to 1:1 ratio
-    this -> logger -> log("image saved");
-    unsigned char *croppedImage = cropImageToSquare(image, width, height, channels,this->logger);
-    this -> logger -> log("image cropped 1:1");
+    this->logger->log("image saved");
+    unsigned char *croppedImage = cropImageToSquare(image, width, height, channels, this->logger);
+    this->logger->log("image cropped 1:1");
     stbi_image_free(image);
 
     // Resize image to 512x512x3
@@ -188,7 +181,7 @@ int ProcessingState::runStateProcess()
     height = targetHeight;
     delete[] croppedImage;
 
-    ExportImage oResizedImage(resizedImage, width, height, channels, std::string("resized_input.jpg"),this->logger);
+    ExportImage oResizedImage(resizedImage, width, height, channels, std::string("resized_input.jpg"), this->logger);
     oResizedImage.SaveImage(fileName);
 
     this->progress = 4;
@@ -200,7 +193,6 @@ int ProcessingState::runStateProcess()
     this->logger->log("Loaded image with a width of %d px, a height of %d px and %d channels", width, height, channels);
 
     // data processing
-
     int *output = this->segFilter->doProcessing(resizedImage, width, height, channels);
     this->progress = 5;
     this->segFilter->doDecision();
@@ -211,13 +203,24 @@ int ProcessingState::runStateProcess()
     // IO writing
     unsigned char *rgbOut = convertMaskToRGB(output, width * height, width, height);
     // unsigned char* pixelOut = converToPixelMask(rgbOut, width, height, 3);
-    
-    ExportImage oMask(rgbOut, width, height, 3, "output.jpg",this->logger);
+
+    // arbitrary decision logic
+    const int DECISION_THRESHOLD = 80;
+    int decisionMetric = output[0];
+    if (decisionMetric > DECISION_THRESHOLD) {
+        ExportImage oImage(resizedImage, width, height, channels, "kept_image.jpg", this->logger);
+        oImage.SaveImage(fileName);
+        this->logger->log("Image kept based on model decision.");
+    } else {
+        this->logger->log("Image discarded based on model decision.");
+    }
+
+    ExportImage oMask(rgbOut, width, height, 3, "output.jpg", this->logger);
     oMask.SaveImage(fileName);
     delete[] output;
     delete[] rgbOut;
     delete[] resizedImage;
-    // freeing data
+
 
     this->reader->removeLoaded();
     this->progress = 7;
@@ -230,4 +233,31 @@ void ProcessingState::setLogger(ThreadLogger *logger)
     ProcessingState::segFilter = new SegFilter("model.engine", this->logger);
     ProcessingState::reader = new Reader(this->logger);
     logger->log("Processing state initialized...\n");
+}
+
+void testArbitraryDecision() {
+    ProcessingState ps;
+
+    ThreadLogger logger;
+    ps.setLogger(&logger);
+
+    int threshold = 80;
+
+    std::cout << "Testing decision logic:" << std::endl;
+
+    int decisionValueBelow = 75;
+    ps.segFilter->setMockModelOutput(mockModelOutput(decisionValueBelow));
+    std::cout << "Test with decision value " << decisionValueBelow << ": ";
+    ps.runStateProcess(); // This should result in discarding the image
+
+    int decisionValueAbove = 85;
+    ps.segFilter->setMockModelOutput(mockModelOutput(decisionValueAbove));
+    std::cout << "Test with decision value " << decisionValueAbove << ": ";
+    ps.runStateProcess(); // This should result in keeping the image
+
+}
+
+int main() {
+    testArbitraryDecision();
+    return 0;
 }
