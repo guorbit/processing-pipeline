@@ -34,8 +34,4 @@ public:
     void setCurrentModelIndex(int index);
 };
 
-void ProcessingState::setCurrentModelIndex(int index) {
-    this->currentModelIndex = index;
-}
-
 #endif // PROCESSING_STATE_HPP
