@@ -193,7 +193,7 @@ int ProcessingState::runStateProcess() {
     this->logger->log("Loaded image with a width of %d px, a height of %d px and %d channels", width, height, channels);
 
     // data processing
-    int *output = this->segFilter->doProcessing(resizedImage, width, height, channels);
+    int *output = this->segFilter->doProcessing(resizedImage, width, height, channels, this->currentModelIndex);
     this->progress = 5;
     this->segFilter->doDecision();
     this->progress = 6;
@@ -222,4 +222,8 @@ void ProcessingState::setLogger(ThreadLogger *logger)
     ProcessingState::segFilter = new SegFilter("model.engine", this->logger);
     ProcessingState::reader = new Reader(this->logger);
     logger->log("Processing state initialized...\n");
+}
+
+void ProcessingState::setCurrentModelIndex(int index) {
+    this->currentModelIndex = index;
 }
