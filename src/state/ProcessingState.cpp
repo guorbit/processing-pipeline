@@ -176,9 +176,10 @@ int ProcessingState::runStateProcess() {
     int targetWidth = 512;
     int targetHeight = 512;
 
-    unsigned char* image;
-    int width, height, channels;
-    segFilter->doProcessing(image, width, height, channels);
+    unsigned char *resizedImage = resizeImage(croppedImage, cropSize, cropSize, channels, targetWidth, targetHeight);
+    width = targetWidth;
+    height = targetHeight;
+    delete[] croppedImage;
 
     ExportImage oResizedImage(resizedImage, width, height, channels, std::string("resized_input.jpg"), this->logger);
     oResizedImage.SaveImage(fileName);
@@ -192,7 +193,7 @@ int ProcessingState::runStateProcess() {
     this->logger->log("Loaded image with a width of %d px, a height of %d px and %d channels", width, height, channels);
 
     // data processing
-    int *output = this->segFilter->doProcessing(resizedImage, width, height, channels);
+    int *output = this->segFilter->doProcessing(image, width, height, channels, this->currentModelIndex);
     this->progress = 5;
     this->segFilter->doDecision();
     this->progress = 6;

@@ -9,6 +9,9 @@
 #include <omp.h>
 #include "../Exporter/exportimage.hpp"
 #include <map>
+#include <vector>
+#include "ThreadLogger.hpp"
+#include "segfilter.hpp"
 
 #ifndef PROCESSING_STATE_HPP
 #define PROCESSING_STATE_HPP
@@ -19,7 +22,7 @@ private:
     ThreadLogger *logger;
     SegFilter *segFilter;
     Reader *reader;
-    int progress;
+    int currentModelIndex;
 
 public:
     ProcessingState();
@@ -28,6 +31,11 @@ public:
     virtual int runStateProcess();
     virtual int getStateCode();
     virtual void setLogger(ThreadLogger *logger);
+    void setCurrentModelIndex(int index);
 };
+
+void ProcessingState::setCurrentModelIndex(int index) {
+    this->currentModelIndex = index;
+}
 
 #endif // PROCESSING_STATE_HPP
