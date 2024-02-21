@@ -1,6 +1,21 @@
 #include "segfilter.hpp"
 #include "../Exporter/exportimage.hpp"  // Include ExportImage header
 
+SegFilter::SegFilter(const std::vector<std::string>& modelPaths, ThreadLogger* logger)
+        : logger(logger) {
+    for (const auto& path : modelPaths) {
+        IModel* model = new TensorRTModel();
+        model->loadModel(path.c_str());
+        models.push_back(model);
+    }
+}
+
+SegFilter::~SegFilter() {
+    for (auto& model : models) {
+        delete model;
+    }
+}
+
 int * SegFilter::doProcessing(unsigned char* image, int width, int height, int channels) {
     return SegFilter::model -> predict(image, width, height, channels);
 }

@@ -176,10 +176,9 @@ int ProcessingState::runStateProcess() {
     int targetWidth = 512;
     int targetHeight = 512;
 
-    unsigned char *resizedImage = resizeImage(croppedImage, cropSize, cropSize, channels, targetWidth, targetHeight);
-    width = targetWidth;
-    height = targetHeight;
-    delete[] croppedImage;
+    unsigned char* image;
+    int width, height, channels;
+    segFilter->doProcessing(image, width, height, channels);
 
     ExportImage oResizedImage(resizedImage, width, height, channels, std::string("resized_input.jpg"), this->logger);
     oResizedImage.SaveImage(fileName);

@@ -5,10 +5,13 @@ Pipeline::Pipeline(){
     this->running = true;
     this->logger = new ThreadLogger();
     logger->log("Starting system pipeline...");
+
     this->stateManager = new StateManager(logger);
-    this->stateManager->transitionTo(new IdlingState());
     this->ioBridge = new IOBridge(logger, stateManager);
-    stateManager -> pushShutdown([this](){this -> stop();});
+
+    std::vector<std::string> modelPaths = { /* model paths here */ };
+    ProcessingState* processingState = new ProcessingState(modelPaths, logger);
+    this->stateManager->transitionTo(processingState);{this -> stop();});
 }
 
 Pipeline::~Pipeline(){
