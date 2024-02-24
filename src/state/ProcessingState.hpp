@@ -23,10 +23,17 @@ private:
     SegFilter *segFilter;
     Reader *reader;
     int currentModelIndex;
+    std::vector<IFilter*> filters;
 
 public:
     ProcessingState();
     virtual ~ProcessingState();
+    void addFilter(IFilter *filter) {
+        filters.push_back(filter);
+    }
+    void removeFilter(IFilter *filter) {
+        filters.erase(std::remove(filters.begin(), filters.end(), filter), filters.end());
+    }
     virtual std::string getName();
     virtual int runStateProcess();
     virtual int getStateCode();
