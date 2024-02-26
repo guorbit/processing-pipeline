@@ -122,9 +122,11 @@ int ProcessingState::runStateProcess() {
     this->progress = 1;
     ProcessingState::logger->log("System entered processing state...");
 
-    for (auto& filter : dynamicFilters) {
-        filter->doProcessing();
-        filter->doDecision();
+    void execute() {
+        for (auto &filter: filters) {
+            filter->doProcessing(input);
+            filter->doDecision(input);
+        }
     }
     // IO reading
     if (!this->reader->isMounted()) {

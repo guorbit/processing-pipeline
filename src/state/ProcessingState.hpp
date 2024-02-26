@@ -24,6 +24,7 @@ private:
     Reader *reader;
     int currentModelIndex;
     std::vector<IFilter*> filters;
+    InputType input;
 
 public:
     ProcessingState();
