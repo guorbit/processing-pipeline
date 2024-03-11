@@ -25,6 +25,8 @@ private:
     int currentModelIndex;
     std::vector<IFilter*> filters;
     InputType input;
+    IFilter* currentFilter;
+    ThreadLogger* logger;
 
 public:
     ProcessingState();
@@ -40,6 +42,8 @@ public:
     virtual int getStateCode();
     virtual void setLogger(ThreadLogger *logger);
     void setCurrentModelIndex(int index);
+    void switchFilter(const std::string& filterType, ThreadLogger* logger);
+
 };
 
 #endif // PROCESSING_STATE_HPP

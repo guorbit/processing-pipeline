@@ -234,3 +234,11 @@ void ProcessingState::setLogger(ThreadLogger *logger)
 void ProcessingState::setCurrentModelIndex(int index) {
     this->currentModelIndex = index;
 }
+
+void ProcessingState::switchFilter(const std::string& filterType, ThreadLogger* logger) {
+    delete currentFilter; // Clean up the existing filter
+
+    if (filterType == "Segmentation") {
+        currentFilter = new SegFilter(logger);
+    }
+}
