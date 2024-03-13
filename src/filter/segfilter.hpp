@@ -21,6 +21,9 @@ public:
     ~SegFilter();
     virtual int * doProcessing(unsigned char* image, int width, int height, int channels, int modelIndex);
     virtual void doDecision();
+    void process(InputType input) override {
+        logger->log("Processing input");
+    }
 };
 
 #endif // SEG_FILTER_H

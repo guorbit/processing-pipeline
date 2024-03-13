@@ -121,6 +121,13 @@ int ProcessingState::getStateCode()
 int ProcessingState::runStateProcess() {
     this->progress = 1;
     ProcessingState::logger->log("System entered processing state...");
+
+    void execute() {
+        for (auto &filter: filters) {
+            filter->doProcessing(input);
+            filter->doDecision(input);
+        }
+    }
     // IO reading
     if (!this->reader->isMounted()) {
         this->reader->mountDrive();
@@ -226,4 +233,16 @@ void ProcessingState::setLogger(ThreadLogger *logger)
 
 void ProcessingState::setCurrentModelIndex(int index) {
     this->currentModelIndex = index;
+}
+
+void ProcessingState::switchFilter(const std::string& filterType, ThreadLogger* logger) {
+    delete currentFilter; // Clean up the existing filter
+
+    if (filterType == "Segmentation") {
+        currentFilter = new SegFilter(logger);
+    }
+}
+
+void ProcessingState::addFilter(IFilter *filter) {
+    filters.push_back(filter);
 }
