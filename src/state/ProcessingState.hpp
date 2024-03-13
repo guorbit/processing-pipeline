@@ -31,9 +31,6 @@ private:
 public:
     ProcessingState();
     virtual ~ProcessingState();
-    void addFilter(IFilter *filter) {
-        filters.push_back(filter);
-    }
     void removeFilter(IFilter *filter) {
         filters.erase(std::remove(filters.begin(), filters.end(), filter), filters.end());
     }
@@ -43,7 +40,7 @@ public:
     virtual void setLogger(ThreadLogger *logger);
     void setCurrentModelIndex(int index);
     void switchFilter(const std::string& filterType, ThreadLogger* logger);
-
+    void addFilter(IFilter *filter);
 };
 
 #endif // PROCESSING_STATE_HPP

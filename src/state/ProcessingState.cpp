@@ -242,3 +242,7 @@ void ProcessingState::switchFilter(const std::string& filterType, ThreadLogger* 
         currentFilter = new SegFilter(logger);
     }
 }
+
+void ProcessingState::addFilter(IFilter *filter) {
+    filters.push_back(filter);
+}
