@@ -41,6 +41,7 @@ public:
     void setCurrentModelIndex(int index);
     void switchFilter(const std::string& filterType, ThreadLogger* logger);
     void addFilter(IFilter *filter);
+    bool runWithTimeout(std::function<void()> task, unsigned long timeoutMillis);
 };
 
 #endif // PROCESSING_STATE_HPP
