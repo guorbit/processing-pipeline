@@ -27,6 +27,7 @@ public:
 
     void log(const char* format, ...);
     void log(LoggingLevelWrapper LoggingLevel,const char* format, ...);
+    void logPerformance(const std::string& category, const std::string& data);
 
 };
 
