@@ -122,6 +122,24 @@ int ProcessingState::runStateProcess() {
     this->progress = 1;
     ProcessingState::logger->log("System entered processing state...");
 
+    auto processingTask = [&]() {
+        int *output = this->segFilter->doProcessing(resizedImage, width, height, channels, this->currentModelIndex);
+        this->progress = 5;
+        this->segFilter->doDecision();
+
+        unsigned char *rgbOut = convertMaskToRGB(output, width * height, width, height);
+        ExportImage oMask(rgbOut, width, height, 3, "output.jpg", this->logger);
+        oMask.SaveImage(fileName);
+        delete[] output;
+        delete[] rgbOut;
+    };
+
+    bool success = runWithTimeout(processingTask, 20000);  // 20 seconds timeout
+
+    if (!success) {
+        ProcessingState::logger->log("Timeout occurred during processing.");
+    }
+
     void execute() {
         for (auto &filter: filters) {
             filter->doProcessing(input);
@@ -246,3 +264,27 @@ void ProcessingState::switchFilter(const std::string& filterType, ThreadLogger* 
 void ProcessingState::addFilter(IFilter *filter) {
     filters.push_back(filter);
 }
+
+bool ProcessingState::runWithTimeout(std::function<void()> task, unsigned long timeoutMillis) {
+    std::mutex mtx;
+    std::condition_variable cv;
+    bool finished = false;
+
+    std::thread taskThread([&]() {
+        task();
+        std::lock_guard<std::mutex> lock(mtx);
+        finished = true;
+        cv.notify_one();
+    });
+
+    std::unique_lock<std::mutex> lock(mtx);
+    if (!cv.wait_for(lock, std::chrono::milliseconds(timeoutMillis), [&]() { return finished; })) {
+        logger->log("Operation timed out.");
+        taskThread.detach();
+        return false;
+    }
+
+    taskThread.join();
+    return true;
+}
+
