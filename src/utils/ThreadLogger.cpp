@@ -106,3 +106,13 @@ void ThreadLogger::logMessage()
     }
 }
 
+void ThreadLogger::logPerformance(const std::string& category, const std::string& data) {
+    std::ostringstream ss;
+    ss << category << ": " << data;
+    log(ss.str().c_str());
+}
+
+
+
+
+
