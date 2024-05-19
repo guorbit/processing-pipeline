@@ -1,6 +1,7 @@
 #include "ThreadLogger.hpp"
 #include <iostream>
 
+
 ThreadLogger::ThreadLogger()
 {
     ThreadLogger::logQueue = new std::queue<std::string>();
@@ -105,4 +106,24 @@ void ThreadLogger::logMessage()
         usleep(1000);
     }
 }
+
+std::queue<std::string> logQueue;
+std::mutex logMutex;
+
+void ThreadLogger::logPerformance(const std::string& category, const std::string& data) {
+    std::ostringstream ss;
+    ss << category << ": " << data;
+    log(ss.str());
+}
+
+void ThreadLogger::log(const std::string& message) {
+    std::lock_guard<std::mutex> guard(logMutex);
+    logQueue.push(message);
+
+    while (!logQueue.empty()) {
+        std::cout << logQueue.front() << std::endl;
+        logQueue.pop();
+    }
+}
+
 

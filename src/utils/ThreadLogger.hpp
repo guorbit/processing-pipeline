@@ -21,12 +21,14 @@ private:
     std::thread logThread;
     bool stopLogger;
     void insertLog(LoggingLevelWrapper LoggingLevel,const char* format, va_list args);
+    void log(const std::string& message);
 public:
     ThreadLogger();
     ~ThreadLogger();
 
     void log(const char* format, ...);
     void log(LoggingLevelWrapper LoggingLevel,const char* format, ...);
+    void logPerformance(const std::string& category, const std::string& data);
 
 };
 
